@@ -1,7 +1,7 @@
 <script lang="ts" setup></script>
 
 <template>
-    <BNavbar toggleable="lg">
+    <BNavbar toggleable="lg" container="true">
         <BNavbarBrand href="https://yhs.kr/">건유1019</BNavbarBrand>
         <BNavbarToggle target="nav-collapse" />
         <BCollapse id="nav-collapse" is-nav>
@@ -36,14 +36,14 @@
         padding: 8px 5px 8px 5px;
         font-size: 15px;
 
-        a.nav-link {
+        :deep(a.nav-link) {
             display: inline-block;
             position: relative;
             color: #dedede !important;
             font-weight: 600;
         }
 
-        a.nav-link:after {
+        :deep(a.nav-link):after {
             content: '';
             position: absolute;
             width: 100%;
@@ -56,7 +56,7 @@
             transition: transform 0.25s ease-out;
         }
 
-        a.nav-link:hover:after {
+        :deep(a.nav-link):hover:after {
             transform: scaleX(1);
             transform-origin: bottom left;
         }
