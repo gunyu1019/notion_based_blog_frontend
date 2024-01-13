@@ -1,19 +1,19 @@
-<script setup lang="ts">
-import StyledText from '@/components/StyledText.vue'
-import type RichText from '@/types/RichText'
+<script lang="ts" setup>
+import { usePostItemStore } from '@/stores/postItem'
+import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
 
-const richText: RichText = {
-    text: '안녕세상?',
-    href: 'https://yhs.kr',
-    strikethrough: false,
-    underline: false,
-    bold: false,
-    color: 'white'
-}
+const postItemStore = usePostItemStore()
+const { content } = storeToRefs(postItemStore)
+onMounted(() => {
+    postItemStore.fetchContent()
+})
 </script>
 
 <template>
-    <main>
-        <StyledText :rich-text="richText" />
-    </main>
+    <div>
+        <ul>
+            <li v-for="item in content">{{ item.title }}</li>
+        </ul>
+    </div>
 </template>
