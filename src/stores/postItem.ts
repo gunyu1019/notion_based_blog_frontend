@@ -1,21 +1,15 @@
+import type { Ref } from 'vue'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios'
-import type { Ref } from 'vue'
 import type PostItem from '@/types/PostItem'
-
-const baseUrl = '/api'
+import Client from '@/api/client'
 
 export const usePostItemStore = defineStore('PostItem', () => {
     const content: Ref<PostItem[]> = ref([])
 
     async function fetchContent() {
-        try {
-            const res = await axios.get(baseUrl + '/posts/')
-            this.content = res.data
-        } catch (err) {
-            console.log(err)
-        }
+        const client = new Client()
+        this.content = await client.getPosts()
     }
 
     return { content, fetchContent }
