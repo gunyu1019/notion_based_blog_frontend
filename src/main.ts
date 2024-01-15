@@ -4,6 +4,11 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import BootstrapVueNext from 'bootstrap-vue-next'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(fas)
+
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
@@ -15,5 +20,6 @@ app.use(createPinia())
 app.use(VueAxios, axios)
 app.use(router)
 app.use(BootstrapVueNext)
+app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.mount('#app')
