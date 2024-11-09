@@ -2,6 +2,7 @@ import AxiosService from '@/api/index'
 import type { AxiosRequestConfig } from 'axios'
 import ClientException from '@/api/excpetion'
 import type PostItem from '@/types/PostItem'
+import type PostItemDetail from '@/types/PostItemDetail'
 
 export default class Client extends AxiosService {
     constructor() {
@@ -23,7 +24,7 @@ export default class Client extends AxiosService {
         })
     }
     
-    getPost = async (post_id: string): Promise<Post> => {
+    getPost = async (post_id: string): Promise<PostItemDetail> => {
         return await this.request({
             method: 'GET',
             url: '/post',
