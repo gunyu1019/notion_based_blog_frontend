@@ -1,12 +1,20 @@
 <script lang="ts" setup>
 import Wave from '@/components/WaveItem.vue'
+import router from '@/router';
+import { usePostItemDetailStore } from '@/stores/postItemDetail';
+import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
+const postItemStore = usePostItemDetailStore()
+const { content } = storeToRefs(postItemStore)
 
 onMounted(() => {
-    console.log(route.query)
+    if (route.query.post_id === undefined) {
+        router.push('home')
+    }
+    postItemStore.fetchContent(route.query.post_id as string)
 })
 </script>
 
