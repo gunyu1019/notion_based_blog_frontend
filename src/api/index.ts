@@ -15,10 +15,10 @@ export default class AxiosService {
     async request(config: AxiosRequestConfig) {
         return await this.instance.request(config)
     }
-    async get(config: AxiosRequestConfig) {
-        return await this.instance.get(config)
+    async get(url: string, config?: AxiosRequestConfig) {
+        return await this.instance.get(url, config)
     }
-    async post(config: AxiosRequestConfig) {
-        return await this.instance.post(config)
+    async post(url: string, config?: AxiosRequestConfig) {
+        return await this.instance.post(url, config)
     }
 }
