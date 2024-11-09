@@ -9,7 +9,7 @@ export const usePostItemStore = defineStore('PostItem', () => {
 
     async function fetchContent() {
         const client = new Client()
-        this.content = await client.getPosts()
+        content.value = await client.getPosts()
     }
 
     return { content, fetchContent }
