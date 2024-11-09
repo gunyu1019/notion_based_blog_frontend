@@ -7,27 +7,20 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    BButton: (typeof import('bootstrap-vue-next'))['BButton']
+    Ave: typeof import('./src/components/ave.vue')['default']
     BCollapse: typeof import('bootstrap-vue-next')['BCollapse']
-    BContainer: (typeof import('bootstrap-vue-next'))['BContainer']
-    BDropdownItem: (typeof import('bootstrap-vue-next'))['BDropdownItem']
-    BFormInput: (typeof import('bootstrap-vue-next'))['BFormInput']
     BNavbar: typeof import('bootstrap-vue-next')['BNavbar']
     BNavbarBrand: typeof import('bootstrap-vue-next')['BNavbarBrand']
     BNavbarNav: typeof import('bootstrap-vue-next')['BNavbarNav']
     BNavbarToggle: typeof import('bootstrap-vue-next')['BNavbarToggle']
-    BNavForm: (typeof import('bootstrap-vue-next'))['BNavForm']
     BNavItem: typeof import('bootstrap-vue-next')['BNavItem']
-    BNavItemDropdown: (typeof import('bootstrap-vue-next'))['BNavItemDropdown']
     HeaderNavbar: typeof import('./src/components/HeaderNavbar.vue')['default']
     PostList: typeof import('./src/components/PostList.vue')['default']
-    Posts: (typeof import('./src/components/PostList.vue'))['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StyledText: typeof import('./src/components/StyledText.vue')['default']
     Wave: typeof import('./src/components/Wave.vue')['default']
-  }
-  export interface ComponentCustomProperties {
-    vBColorMode: (typeof import('bootstrap-vue-next'))['vBColorMode']
+    WaveItem: typeof import('./src/components/WaveItem.vue')['default']
+    'ㅈave': typeof import('./src/components/ㅈave.vue')['default']
   }
 }
