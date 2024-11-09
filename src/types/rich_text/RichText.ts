@@ -1,5 +1,4 @@
-import { types } from 'node-sass'
-import Annotated from '@/types/Annotated'
+import Annotated from '@/types/rich_text/Annotated'
 
 export default interface RichText extends Annotated {
     text: String
