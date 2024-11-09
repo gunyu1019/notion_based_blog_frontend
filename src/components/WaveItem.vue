@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-    type: { type: number; default: 1 }
+    type: string
 }>()
 </script>
 
