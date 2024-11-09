@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type RichText from '@/types/RichText'
+import type RichText from '@/types/rich_text/RichText'
 
 defineProps<{
     richText: RichText
@@ -7,14 +7,14 @@ defineProps<{
 </script>
 
 <template>
-    <a v-if="richText.href !== null" v-bind:href="richText.href">
+    <a v-if="richText.href !== null" v-bind:href="richText.href as string">
         <span
             v-bind:style="{
                 textDecoration: `${richText.underline === true ? 'underline' : ''}
-                ${richText.strikethrough === true ? 'line-through' : ''}`,
-                fontWeight: richText.bold === true ? 'bold' : null,
+                    ${richText.strikethrough === true ? 'line-through' : ''}`,
+                fontWeight: richText.bold === true ? 'bold' : 'undefined',
                 fontStyle: richText.italic ? 'italic' : 'normal',
-                color: richText.color
+                color: richText.color ?? 'undefined'
             }"
             >{{ richText.text }}</span
         >
@@ -24,9 +24,9 @@ defineProps<{
         v-bind:style="{
             textDecoration: `${richText.underline === true ? 'underline' : ''}
                 ${richText.strikethrough === true ? 'line-through' : ''}`,
-            fontWeight: richText.bold === true ? 'bold' : null,
+            fontWeight: richText.bold === true ? 'bold' : 'undefined',
             fontStyle: richText.italic ? 'italic' : 'normal',
-            color: richText.color
+            color: richText.color ?? 'undefined'
         }"
         >{{ richText.text }}</span
     >
