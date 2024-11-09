@@ -2,7 +2,7 @@
 import { usePostItemStore } from '@/stores/postItem'
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import Wave from '@/components/Wave.vue'
+import Wave from '@/components/WaveItem.vue'
 
 const postItemStore = usePostItemStore()
 const { content } = storeToRefs(postItemStore)
