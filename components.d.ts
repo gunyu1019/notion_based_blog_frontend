@@ -7,7 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Ave: typeof import('./src/components/ave.vue')['default']
     BCollapse: typeof import('bootstrap-vue-next')['BCollapse']
     BNavbar: typeof import('bootstrap-vue-next')['BNavbar']
     BNavbarBrand: typeof import('bootstrap-vue-next')['BNavbarBrand']
@@ -19,8 +18,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StyledText: typeof import('./src/components/StyledText.vue')['default']
-    Wave: typeof import('./src/components/Wave.vue')['default']
     WaveItem: typeof import('./src/components/WaveItem.vue')['default']
-    'ㅈave': typeof import('./src/components/ㅈave.vue')['default']
   }
 }

@@ -1,10 +1,10 @@
 import type Category from './Category'
 
 export default interface PostItem {
-    id: String
-    title: String
+    id: string
+    title: string
     published_at: Date
-    thumbnail_url: String
+    thumbnail_url: string
     hits: bigint
     category: Category[]
 }

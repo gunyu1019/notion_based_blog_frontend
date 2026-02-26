@@ -18,29 +18,46 @@
 
 <style lang="scss" scoped>
 .navbar {
-    z-index: 1;
+    z-index: 1000;
     position: fixed;
     top: 0;
     width: 100%;
-
-    background: #1e212580;
+    background: #ffffff;
+    border-bottom: 1px solid #f1f3f4;
+    padding: 12px 0;
 
     .navbar-brand {
-        padding: 5px 8px 5px 8px;
-        color: white;
-        font-size: 20px;
-        font-weight: bold;
+        padding: 8px 16px;
+        color: #212529 !important;
+        font-size: 22px;
+        font-weight: 700;
+        text-decoration: none;
+
+        &:hover {
+            color: #495057 !important;
+        }
     }
 
     .nav-item {
-        padding: 8px 5px 8px 5px;
+        padding: 8px 8px;
         font-size: 15px;
 
         :deep(a.nav-link) {
             display: inline-block;
             position: relative;
-            color: #dedede !important;
-            font-weight: 600;
+            color: #495057 !important;
+            font-weight: 500;
+            padding: 8px 16px;
+            transition: color 0.2s ease;
+
+            &:hover {
+                color: #212529 !important;
+            }
+
+            &.active {
+                color: #212529 !important;
+                font-weight: 600;
+            }
         }
 
         :deep(a.nav-link):after {
@@ -49,16 +66,37 @@
             width: 100%;
             transform: scaleX(0);
             height: 2px;
-            bottom: 0;
+            bottom: 4px;
             left: 0;
-            background-color: #dedede !important;
+            background-color: #212529;
             transform-origin: bottom right;
             transition: transform 0.25s ease-out;
         }
 
-        :deep(a.nav-link):hover:after {
+        :deep(a.nav-link):hover:after,
+        :deep(a.nav-link.active):after {
             transform: scaleX(1);
             transform-origin: bottom left;
+        }
+    }
+}
+
+// 모바일 반응형
+@media (max-width: 991.98px) {
+    .navbar {
+        .navbar-brand {
+            font-size: 20px;
+        }
+
+        .nav-item {
+            :deep(a.nav-link) {
+                padding: 12px 16px;
+                border-bottom: 1px solid #f1f3f4;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
         }
     }
 }
