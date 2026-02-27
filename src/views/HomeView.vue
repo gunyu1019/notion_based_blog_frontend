@@ -21,27 +21,29 @@ const filteredAndSortedPosts = computed(() => {
 
     // 카테고리 필터링
     if (selectedCategory.value) {
-        filtered = filtered.filter(post =>
-            post.category.some(cat => cat.id === selectedCategory.value)
+        filtered = filtered.filter(
+            (post) =>
+                post.category && post.category.some((cat) => cat.id === selectedCategory.value)
         )
     }
 
     // 정렬
     if (sortOption.value === 'date') {
-        filtered = [...filtered].sort((a, b) =>
-            new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
-        )
+        filtered = [...filtered].sort((a, b) => {
+            const dateA = a.published_at ? new Date(a.published_at).getTime() : 0
+            const dateB = b.published_at ? new Date(b.published_at).getTime() : 0
+            return dateB - dateA
+        })
     } else {
-        filtered = [...filtered].sort((a, b) =>
-            Number(b.hits) - Number(a.hits)
-        )
+        filtered = [...filtered].sort((a, b) => (b.hits || 0) - (a.hits || 0))
     }
 
     return filtered
 })
 
 // 날짜 포맷 함수
-function formatDate(date: Date): string {
+function formatDate(date: string | null | undefined): string {
+    if (!date) return '날짜 없음'
     return new Date(date).toLocaleDateString('ko-KR', {
         year: 'numeric',
         month: 'short',
@@ -50,8 +52,8 @@ function formatDate(date: Date): string {
 }
 
 // 조회수 포맷 함수
-function formatViews(views: bigint): string {
-    const num = Number(views)
+function formatViews(views: number | undefined): string {
+    const num = Number(views || 0)
     if (num >= 1000) {
         return (num / 1000).toFixed(1) + 'k'
     }
@@ -64,9 +66,14 @@ function selectCategory(categoryId: string | null) {
 }
 
 // 컴포넌트 마운트 시 데이터 로드
-onMounted(() => {
-    postItemStore.fetchContent()
-    categoryStore.fetchCategories()
+onMounted(async () => {
+    try {
+        await postItemStore.fetchContent()
+        // 게시글에서 카테고리 추출
+        categoryStore.extractCategoriesFromPosts(content.value)
+    } catch (error) {
+        console.error('Failed to load data:', error)
+    }
 })
 </script>
 
@@ -89,7 +96,7 @@ onMounted(() => {
                         <div class="category-filters">
                             <button
                                 class="category-btn"
-                                :class="{ 'active': selectedCategory === null }"
+                                :class="{ active: selectedCategory === null }"
                                 @click="selectCategory(null)"
                             >
                                 전체
@@ -98,7 +105,7 @@ onMounted(() => {
                                 v-for="category in categories"
                                 :key="String(category.id)"
                                 class="category-btn"
-                                :class="{ 'active': selectedCategory === category.id }"
+                                :class="{ active: selectedCategory === category.id }"
                                 @click="selectCategory(String(category.id))"
                             >
                                 {{ String(category.name) }}
@@ -122,13 +129,13 @@ onMounted(() => {
                                     <li>
                                         <button
                                             class="dropdown-item"
-                                            :class="{ 'active': sortOption === 'date' }"
+                                            :class="{ active: sortOption === 'date' }"
                                             @click="sortOption = 'date'"
                                         >
                                             <font-awesome-icon
                                                 icon="check"
                                                 class="me-2"
-                                                :class="{ 'invisible': sortOption !== 'date' }"
+                                                :class="{ invisible: sortOption !== 'date' }"
                                             />
                                             최신순 (등록일)
                                         </button>
@@ -136,13 +143,13 @@ onMounted(() => {
                                     <li>
                                         <button
                                             class="dropdown-item"
-                                            :class="{ 'active': sortOption === 'views' }"
+                                            :class="{ active: sortOption === 'views' }"
                                             @click="sortOption = 'views'"
                                         >
                                             <font-awesome-icon
                                                 icon="check"
                                                 class="me-2"
-                                                :class="{ 'invisible': sortOption !== 'views' }"
+                                                :class="{ invisible: sortOption !== 'views' }"
                                             />
                                             인기순 (조회수)
                                         </button>
@@ -211,11 +218,10 @@ onMounted(() => {
                     <div class="col-12 col-lg-10">
                         <div class="footer-content">
                             <p class="footer-copyright">
-                                Copyright(©) 2022-present gunyu1019 All right reserved. 통합 이용약관
+                                Copyright(©) 2022-present gunyu1019 All right reserved. 통합
+                                이용약관
                             </p>
-                            <p class="footer-design">
-                                Designed By gunyu1019
-                            </p>
+                            <p class="footer-design">Designed By gunyu1019</p>
                         </div>
                     </div>
                 </div>
@@ -339,7 +345,9 @@ onMounted(() => {
         border: 1px solid #f1f3f4;
         border-radius: 12px;
         overflow: hidden;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
         height: 100%;
 
         &:hover {
