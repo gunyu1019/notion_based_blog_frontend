@@ -9,23 +9,20 @@
         <div class="content-wrapper">
             <div class="container py-5">
                 <!-- 로딩 상태 -->
-                <div v-if="loading" class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">로딩 중...</span>
-                    </div>
-                    <p class="mt-3 text-muted">게시글을 불러오는 중...</p>
+                <div v-if="loading" class="status-center">
+                    <i class="fas fa-circle-notch fa-spin fa-2x mb-3 text-primary"></i>
+                    <p class="text-muted">게시글을 불러오는 중입니다...</p>
                 </div>
 
                 <!-- 에러 상태 -->
-                <div v-else-if="error" class="alert alert-danger" role="alert">
-                    <h4 class="alert-heading">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        오류 발생
-                    </h4>
-                    <p class="mb-0">{{ error }}</p>
-                    <hr />
+                <div v-else-if="error" class="status-center">
+                    <i v-if="isAccessDenied()" class="fas fa-lock fa-3x mb-3 text-secondary"></i>
+                    <i v-else class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>
+                    <h3 v-if="isAccessDenied()" class="text-dark fw-bold mb-3">접근이 제한된 게시글입니다.</h3>
+                    <h3 v-else class="text-danger mb-3">게시글을 불러오는 중 오류가 발생했습니다.</h3>
+                    <p class="text-muted mb-4">{{ error }}</p>
                     <div class="d-flex gap-2">
-                        <button @click="retry" class="btn btn-outline-danger btn-sm">
+                        <button @click="retry" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-redo me-1"></i>
                             다시 시도
                         </button>
@@ -39,57 +36,26 @@
                 <!-- 게시글 내용 -->
                 <article v-else-if="postDetail" class="post-article">
                     <!-- 게시글 헤더 -->
-                    <header class="post-header mb-5">
-                        <div class="row">
-                            <div class="col-12">
-                                <!-- 카테고리 -->
-                                <div
-                                    v-if="postDetail.category && postDetail.category.length > 0"
-                                    class="mb-3"
-                                >
-                                    <span
-                                        v-for="category in postDetail.category"
-                                        :key="category.id"
-                                        class="badge bg-secondary me-2"
-                                    >
-                                        {{ category.name }}
-                                    </span>
-                                </div>
+                    <header class="post-header">
+                        <!-- 카테고리 배지 -->
+                        <div v-if="postDetail.category && postDetail.category.length > 0" class="mb-3">
+                            <span
+                                v-for="category in postDetail.category"
+                                :key="category.id"
+                                class="badge bg-primary me-2"
+                            >
+                                {{ category.name }}
+                            </span>
+                        </div>
 
-                                <!-- 제목 -->
-                                <h1 class="display-4 fw-bold mb-3">{{ postDetail.title }}</h1>
+                        <!-- 제목 -->
+                        <h1 class="display-4 fw-bold mb-4">{{ postDetail.title }}</h1>
 
-                                <!-- 메타 정보 -->
-                                <div class="d-flex flex-wrap align-items-center text-muted mb-4">
-                                    <div class="me-4 mb-2">
-                                        <i class="fas fa-calendar-alt me-2"></i>
-                                        <span v-if="postDetail.published_at">
-                                            {{ formatDate(postDetail.published_at) }}
-                                        </span>
-                                        <span v-else>발행일 없음</span>
-                                    </div>
-                                    <div class="me-4 mb-2">
-                                        <i class="fas fa-edit me-2"></i>
-                                        <span v-if="postDetail.last_edited_time">
-                                            {{ formatDate(postDetail.last_edited_time) }}
-                                        </span>
-                                    </div>
-                                    <div class="mb-2">
-                                        <i class="fas fa-eye me-2"></i>
-                                        <span>{{ postDetail.hits || 0 }}회 조회</span>
-                                    </div>
-                                </div>
-
-                                <!-- 설명 -->
-                                <p
-                                    v-if="
-                                        postDetail.description &&
-                                        postDetail.description !== '미리보기 없음'
-                                    "
-                                    class="lead text-muted"
-                                >
-                                    {{ postDetail.description }}
-                                </p>
+                        <!-- 메타 정보 (조회수만) -->
+                        <div class="post-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-eye"></i>
+                                <span>{{ postDetail.hits || 0 }}회 조회</span>
                             </div>
                         </div>
                     </header>
@@ -113,18 +79,18 @@
                                 :block="block"
                             />
                         </div>
-                        <div v-else class="text-center py-5 text-muted">
-                            <i class="fas fa-file-alt fa-3x mb-3"></i>
+                        <div v-else class="empty-content">
+                            <i class="fas fa-file-alt fa-3x"></i>
                             <p>내용이 없습니다.</p>
                         </div>
                     </div>
                 </article>
 
                 <!-- 게시글이 없는 경우 -->
-                <div v-else class="text-center py-5">
+                <div v-else class="status-center">
                     <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                    <h3 class="text-muted">게시글을 찾을 수 없습니다</h3>
-                    <p class="text-muted">요청하신 게시글이 존재하지 않거나 삭제되었습니다.</p>
+                    <h3 class="text-muted mb-3">게시글을 찾을 수 없습니다</h3>
+                    <p class="text-muted mb-4">요청하신 게시글이 존재하지 않거나 삭제되었습니다.</p>
                     <router-link to="/" class="btn btn-primary">
                         <i class="fas fa-home me-2"></i>
                         홈으로 돌아가기
@@ -139,24 +105,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import HeaderNavbar from '@/components/HeaderNavbar.vue'
 import WaveItem from '@/components/WaveItem.vue'
 import NotionBlock from '@/components/block/NotionBlock.vue'
 import { extendedApi, type PostItemDetail } from '@/api'
+import '@/assets/style/post.scss'
 
 // 컴포넌트 별칭
 const Wave = WaveItem
 
 const route = useRoute()
-const router = useRouter()
 
 // 상태 관리
 const postDetail = ref<PostItemDetail | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
+// 접근 권한 관련 함수
+const isAccessDenied = () => {
+    return error.value?.includes('접근이 제한') ||
+           error.value?.includes('권한') ||
+           error.value?.includes('비공개')
+}
 
 /**
  * 게시글 데이터 가져오기
@@ -171,7 +143,9 @@ const fetchPostDetail = async (postId: string) => {
     } catch (err: any) {
         console.error('Failed to fetch post detail:', err)
 
-        if (err.response?.status === 404) {
+        if (err.response?.status === 403) {
+            error.value = '접근이 제한된 게시글입니다.'
+        } else if (err.response?.status === 404) {
             error.value = '게시글을 찾을 수 없습니다.'
         } else if (err.response?.status >= 500) {
             error.value = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
@@ -210,21 +184,6 @@ const getPostIdFromRoute = (): string | null => {
     return null
 }
 
-/**
- * 날짜 포매팅
- */
-const formatDate = (dateString: string): string => {
-    try {
-        const date = new Date(dateString)
-        return date.toLocaleDateString('ko-KR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        })
-    } catch {
-        return dateString
-    }
-}
 
 /**
  * 컴포넌트 마운트 시 실행
@@ -242,91 +201,6 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-.post-detail-view {
-    min-height: 100vh;
-}
-
-.content-wrapper {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    min-height: 80vh;
-}
-
-.post-article {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 3rem;
-    margin-bottom: 2rem;
-}
-
-.post-header {
-    border-bottom: 1px solid #e9ecef;
-    padding-bottom: 2rem;
-}
-
-.post-content {
-    line-height: 1.8;
-    font-size: 1.1rem;
-}
-
-.post-content :deep(h1),
-.post-content :deep(h2),
-.post-content :deep(h3),
-.post-content :deep(h4),
-.post-content :deep(h5),
-.post-content :deep(h6) {
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
-}
-
-.post-content :deep(p) {
-    margin-bottom: 1.25rem;
-}
-
-.post-content :deep(pre) {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1.5rem 0;
-    overflow-x: auto;
-}
-
-.post-content :deep(.table) {
-    margin: 1.5rem 0;
-}
-
-.post-content :deep(blockquote) {
-    border-left: 4px solid #007bff;
-    background-color: #f8f9fa;
-    padding: 1rem 1.5rem;
-    margin: 1.5rem 0;
-    border-radius: 0 8px 8px 0;
-}
-
-.post-content :deep(.alert) {
-    margin: 1.5rem 0;
-}
-
-.post-content :deep(img) {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin: 1rem 0;
-}
-
-@media (max-width: 768px) {
-    .post-article {
-        padding: 1.5rem;
-        margin: 0 1rem 2rem;
-        border-radius: 8px;
-    }
-
-    .post-content {
-        font-size: 1rem;
-    }
-}
+<style>
+/* PostDetailView 컴포넌트의 모든 스타일은 post.scss에서 관리합니다 */
 </style>
