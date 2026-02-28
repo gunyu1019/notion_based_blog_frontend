@@ -326,25 +326,6 @@ onMounted(async () => {
                 </div>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="footer mt-5">
-            <div class="container-fluid">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-lg-10">
-                        <div class="footer-content text-center">
-                            <p class="footer-copyright mb-1">
-                                Copyright(©) 2022-present gunyu1019 All right reserved. 통합 이용약관
-                            </p>
-                            <p class="footer-design mb-0">Designed By gunyu1019</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Bottom Wave Decoration -->
-        <Wave type="2" />
     </div>
 </template>
 
