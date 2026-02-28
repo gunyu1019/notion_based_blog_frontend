@@ -12,10 +12,7 @@ export class CodeHighlighter {
      * 생성자 - private으로 외부에서 직접 인스턴스 생성 방지
      */
     private constructor() {
-        // highlight.js 초기화
-        this.initializeHighlighter()
-
-        // 지원하는 언어 목록 설정
+        // 지원하는 언어 목록 설정 (highlight.js 초기화보다 먼저)
         this.supportedLanguages = new Set([
             'javascript',
             'typescript',
@@ -52,6 +49,9 @@ export class CodeHighlighter {
             'plaintext',
             'text'
         ])
+
+        // highlight.js 초기화
+        this.initializeHighlighter()
     }
 
     /**
@@ -71,7 +71,7 @@ export class CodeHighlighter {
         // 자동 언어 감지 비활성화 (성능 향상)
         hljs.configure({
             ignoreUnescapedHTML: true,
-            languages: Array.from(this.supportedLanguages)
+            languages: this.supportedLanguages ? Array.from(this.supportedLanguages) : []
         })
     }
 
