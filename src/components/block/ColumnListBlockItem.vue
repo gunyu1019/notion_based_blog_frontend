@@ -1,11 +1,11 @@
 <template>
     <div class="column-list-container">
-        <div class="row g-3" :class="getGridClass">
-            <NotionBlock
+        <div class="row w-100 mx-0" :class="getRowClasses">
+            <ColumnBlockItem
                 v-for="child in block.children"
                 :key="child.id"
                 :block="child"
-                :depth="depth"
+                :depth="depth + 1"
                 :max-depth="maxDepth"
             />
         </div>
@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import NotionBlock from './NotionBlock.vue'
+import ColumnBlockItem from './ColumnBlockItem.vue'
 import type { Block } from '@/api/generated/api'
 
 interface Props {
@@ -29,26 +29,25 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 /**
- * 컬럼 개수에 따른 Grid 클래스 결정
- * 최대 4개까지의 컬럼을 지원하며, 모바일에서는 세로 스택으로 배치
+ * 컬럼 개수에 따른 Row 클래스 결정
+ * Bootstrap의 flex 기반 자동 등분 활용
  */
-const getGridClass = computed((): string => {
-    const columnCount = props.block.children?.length || 2
+const getRowClasses = computed((): string[] => {
+    const columnCount = props.block.children?.length || 1
+    const classes = ['g-3'] // 기본 gutter 간격
 
-    // 컬럼 개수에 따른 반응형 클래스 설정
-    switch (columnCount) {
-        case 1:
-            return 'row-cols-1'
-        case 2:
-            return 'row-cols-1 row-cols-md-2'
-        case 3:
-            return 'row-cols-1 row-cols-md-3'
-        case 4:
-            return 'row-cols-1 row-cols-md-2 row-cols-lg-4'
-        default:
-            // 5개 이상의 경우 최대 4개로 제한하고 나머지는 다음 줄로
-            return 'row-cols-1 row-cols-md-2 row-cols-lg-4'
+    // 컬럼 개수에 따른 반응형 클래스
+    if (columnCount === 1) {
+        classes.push('justify-content-center')
+    } else if (columnCount <= 4) {
+        // 4개 이하일 때는 균등 분할
+        classes.push('align-items-stretch')
+    } else {
+        // 4개 초과시에는 줄바꿈 허용하며 최대 4개씩 배치
+        classes.push('row-cols-1', 'row-cols-sm-2', 'row-cols-md-3', 'row-cols-lg-4')
     }
+
+    return classes
 })
 </script>
 

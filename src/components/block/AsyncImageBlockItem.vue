@@ -22,7 +22,7 @@
                 alt="Blog Image"
                 loading="lazy"
                 @error="handleImageError"
-                style="max-width: 100%; height: auto; width: 100%"
+                style="aspect-ratio: 16 / 9; object-fit: cover; width: 100%; height: auto"
             />
 
             <!-- 이미지 캡션 렌더링 (있는 경우) -->
@@ -121,6 +121,8 @@ img {
     transition: opacity 0.3s ease-in-out;
     display: block;
     margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
 }
 
 img:hover {
@@ -132,6 +134,13 @@ img:hover {
     max-width: 100% !important;
     width: 100% !important;
     height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: cover !important;
+}
+
+/* 정사각형 비율이 필요한 경우를 위한 클래스 */
+.async-image-block.square-ratio img {
+    aspect-ratio: 1 / 1 !important;
 }
 
 /* 다크 모드 지원 */

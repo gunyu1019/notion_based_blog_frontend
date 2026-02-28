@@ -1,11 +1,11 @@
 <template>
     <div class="col-12 col-md">
-        <div class="column-content">
+        <div class="column-content h-100">
             <NotionBlock
                 v-for="child in block.children"
                 :key="child.id"
                 :block="child"
-                :depth="depth"
+                :depth="depth + 1"
                 :max-depth="maxDepth"
             />
         </div>

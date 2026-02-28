@@ -50,8 +50,14 @@ const currentDepth = computed((): number => {
 
 /**
  * 하위 블록이 있는지 확인
+ * column_list와 column 타입은 내부에서 자체적으로 children을 렌더링하므로 제외
  */
 const hasChildren = computed((): boolean => {
+    // column_list와 column 타입은 내부에서 자체 렌더링하므로 여기서 children 렌더링 안 함
+    if (props.block.type === 'column_list' || props.block.type === 'column') {
+        return false
+    }
+
     return Boolean(
         props.block.has_children &&
         props.block.children &&
