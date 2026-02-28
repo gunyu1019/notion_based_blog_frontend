@@ -20,6 +20,16 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                // Sass Legacy API 경고 숨김 (Vite 4.x에서 modern-compiler 미지원)
+                silenceDeprecations: ['legacy-js-api'],
+                // Sass @import 경고도 함께 숨김
+                quietDeps: true
+            }
+        }
+    },
     server: {
         proxy: {
             '/api': {
