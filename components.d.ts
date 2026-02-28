@@ -21,6 +21,7 @@ declare module 'vue' {
     HeaderNavbar: typeof import('./src/components/HeaderNavbar.vue')['default']
     NotionBlock: typeof import('./src/components/block/NotionBlock.vue')['default']
     PostList: typeof import('./src/components/PostList.vue')['default']
+    QuoteBlockItem: typeof import('./src/components/block/QuoteBlockItem.vue')['default']
     RichTextRenderer: typeof import('./src/components/RichTextRenderer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

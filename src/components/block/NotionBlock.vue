@@ -29,6 +29,7 @@ const FileBlockItem = defineAsyncComponent(() => import('./FileBlockItem.vue'))
 const AsyncImageBlockItem = defineAsyncComponent(() => import('./AsyncImageBlockItem.vue'))
 const ColumnListBlockItem = defineAsyncComponent(() => import('./ColumnListBlockItem.vue'))
 const ColumnBlockItem = defineAsyncComponent(() => import('./ColumnBlockItem.vue'))
+const QuoteBlockItem = defineAsyncComponent(() => import('./QuoteBlockItem.vue'))
 
 interface Props {
     block: Block | CodeBlock | TableBlock | UrlBlock | FileBlock
@@ -50,11 +51,15 @@ const currentDepth = computed((): number => {
 
 /**
  * 하위 블록이 있는지 확인
- * column_list와 column 타입은 내부에서 자체적으로 children을 렌더링하므로 제외
+ * column_list, column, quote 타입은 내부에서 자체적으로 children을 렌더링하므로 제외
  */
 const hasChildren = computed((): boolean => {
-    // column_list와 column 타입은 내부에서 자체 렌더링하므로 여기서 children 렌더링 안 함
-    if (props.block.type === 'column_list' || props.block.type === 'column') {
+    // column_list, column, quote 타입은 내부에서 자체 렌더링하므로 여기서 children 렌더링 안 함
+    if (
+        props.block.type === 'column_list' ||
+        props.block.type === 'column' ||
+        props.block.type === 'quote'
+    ) {
         return false
     }
 
@@ -80,10 +85,12 @@ const componentMapping: Record<string, Component> = {
     heading_6: TextBlockItem,
     bulleted_list_item: TextBlockItem,
     numbered_list_item: TextBlockItem,
-    quote: TextBlockItem,
     callout: TextBlockItem,
     toggle: TextBlockItem,
     divider: TextBlockItem,
+
+    // 인용구 블록 - 전용 컴포넌트
+    quote: QuoteBlockItem,
 
     // 이미지 블록 - 비동기 CDN URL 로딩
     image: AsyncImageBlockItem,
@@ -139,6 +146,13 @@ const componentProps = computed(() => {
                 maxDepth: props.maxDepth
             }
 
+        case 'quote':
+            return {
+                block: props.block as Block,
+                depth: currentDepth.value,
+                maxDepth: props.maxDepth
+            }
+
         case 'code':
             return {
                 codeBlock: props.block as CodeBlock
@@ -182,9 +196,6 @@ const getChildrenContainerClass = (): string => {
 
     // 블록 타입에 따른 특별한 스타일링
     switch (props.block.type) {
-        case 'quote':
-            classes.push('children-quote')
-            break
         case 'callout':
             classes.push('children-callout')
             break
