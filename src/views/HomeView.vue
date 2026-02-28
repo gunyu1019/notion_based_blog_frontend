@@ -196,7 +196,7 @@ onMounted(async () => {
                                 class="dropdown-toggle"
                             >
                                 <template #button-content>
-                                    <font-awesome-icon icon="sort" class="me-2" />
+                                    <font-awesome-icon :icon="['fas', 'sort']" class="me-2" />
                                     {{ sortOption === 'latest' ? '최신순' : '조회순' }}
                                 </template>
 
@@ -204,7 +204,7 @@ onMounted(async () => {
                                     :active="sortOption === 'latest'"
                                     @click="changeSortOption('latest')"
                                 >
-                                    <font-awesome-icon icon="clock" class="me-2" />
+                                    <font-awesome-icon :icon="['fas', 'clock']" class="me-2" />
                                     최신순 (등록일)
                                 </BDropdownItem>
 
@@ -212,7 +212,7 @@ onMounted(async () => {
                                     :active="sortOption === 'popular'"
                                     @click="changeSortOption('popular')"
                                 >
-                                    <font-awesome-icon icon="eye" class="me-2" />
+                                    <font-awesome-icon :icon="['fas', 'eye']" class="me-2" />
                                     조회순 (인기)
                                 </BDropdownItem>
                             </BDropdown>
@@ -222,7 +222,7 @@ onMounted(async () => {
                     <!-- 2. 중앙: Top 3 하이라이트 카드 (Middle Section) -->
                     <section class="highlight-section mb-5" v-if="topPosts.length > 0">
                         <h2 class="section-title mb-4">
-                            <font-awesome-icon icon="star" class="me-2" />
+                            <font-awesome-icon :icon="['fas', 'star']" class="me-2" />
                             {{ sortOption === 'latest' ? '최신 글' : '인기 글' }}
                         </h2>
                         <div class="row g-4">
@@ -307,7 +307,7 @@ onMounted(async () => {
                     <!-- 3. 하단: 리스트 뷰 및 Mock 페이지네이션 (Bottom Section) -->
                     <section class="list-section mb-5" v-if="listPosts.length > 0">
                         <h2 class="section-title mb-4">
-                            <font-awesome-icon icon="list" class="me-2" />
+                            <font-awesome-icon :icon="['fas', 'list']" class="me-2" />
                             전체 목록
                         </h2>
 
@@ -406,7 +406,7 @@ onMounted(async () => {
                                 class="btn btn-outline-secondary btn-load-more"
                                 @click="loadMore"
                             >
-                                <font-awesome-icon icon="plus" class="me-2" />
+                                <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />
                                 더보기 ({{ filteredAndSortedPosts.length - 3 - displayLimit }}개 더)
                             </button>
                         </div>
@@ -414,7 +414,7 @@ onMounted(async () => {
 
                     <!-- 글이 없는 경우 -->
                     <div v-if="filteredAndSortedPosts.length === 0" class="no-results">
-                        <font-awesome-icon icon="search" class="no-results-icon" />
+                        <font-awesome-icon :icon="['fas', 'search']" class="no-results-icon" />
                         <h4>검색 결과가 없습니다</h4>
                         <p>다른 카테고리를 선택해보세요.</p>
                     </div>

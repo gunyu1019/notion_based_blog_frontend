@@ -11,7 +11,7 @@
                 <!-- 로딩 상태 -->
                 <div v-if="loading" class="status-center">
                     <font-awesome-icon
-                        icon="circle-notch"
+                        :icon="['fas', 'circle-notch']"
                         spin
                         size="2x"
                         class="mb-3 text-primary"
@@ -23,13 +23,13 @@
                 <div v-else-if="error" class="status-center">
                     <font-awesome-icon
                         v-if="isAccessDenied()"
-                        icon="lock"
+                        :icon="['fas', 'lock']"
                         size="3x"
                         class="mb-3 text-secondary"
                     />
                     <font-awesome-icon
                         v-else
-                        icon="exclamation-triangle"
+                        :icon="['fas', 'exclamation-triangle']"
                         size="3x"
                         class="mb-3 text-danger"
                     />
@@ -38,11 +38,11 @@
                     <p class="text-muted mb-4">{{ error }}</p>
                     <div class="d-flex gap-2">
                         <button @click="retry" class="btn btn-outline-primary btn-sm">
-                            <font-awesome-icon icon="redo" class="me-1" />
+                            <font-awesome-icon :icon="['fas', 'redo']" class="me-1" />
                             다시 시도
                         </button>
                         <router-link to="/" class="btn btn-outline-secondary btn-sm">
-                            <font-awesome-icon icon="home" class="me-1" />
+                            <font-awesome-icon :icon="['fas', 'home']" class="me-1" />
                             홈으로
                         </router-link>
                     </div>
@@ -69,7 +69,7 @@
                         <!-- 메타 정보 (조회수만) -->
                         <div class="post-meta">
                             <div class="meta-item">
-                                <font-awesome-icon icon="eye" />
+                                <font-awesome-icon :icon="['fas', 'eye']" />
                                 <span>{{ postDetail.hits || 0 }}회 조회</span>
                             </div>
                         </div>
@@ -95,7 +95,7 @@
                             />
                         </div>
                         <div v-else class="empty-content">
-                            <font-awesome-icon icon="file-alt" size="3x" />
+                            <font-awesome-icon :icon="['fas', 'file-alt']" size="3x" />
                             <p>내용이 없습니다.</p>
                         </div>
                     </div>
@@ -103,11 +103,11 @@
 
                 <!-- 게시글이 없는 경우 -->
                 <div v-else class="status-center">
-                    <font-awesome-icon icon="search" size="3x" class="text-muted mb-3" />
+                    <font-awesome-icon :icon="['fas', 'search']" size="3x" class="text-muted mb-3" />
                     <h3 class="text-muted mb-3">게시글을 찾을 수 없습니다</h3>
                     <p class="text-muted mb-4">요청하신 게시글이 존재하지 않거나 삭제되었습니다.</p>
                     <router-link to="/" class="btn btn-primary">
-                        <font-awesome-icon icon="home" class="me-2" />
+                        <font-awesome-icon :icon="['fas', 'home']" class="me-2" />
                         홈으로 돌아가기
                     </router-link>
                 </div>
