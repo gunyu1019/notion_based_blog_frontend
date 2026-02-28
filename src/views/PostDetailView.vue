@@ -143,7 +143,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import HeaderNavbar from '@/components/HeaderNavbar.vue'
 import WaveItem from '@/components/WaveItem.vue'
-import NotionBlock from '@/components/NotionBlock.vue'
+import NotionBlock from '@/components/block/NotionBlock.vue'
 import { DefaultApi } from '@/api/generated/api'
 import type { PostItemDetail } from '@/api/generated/api'
 
