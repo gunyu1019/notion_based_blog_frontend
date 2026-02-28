@@ -5,6 +5,9 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import BootstrapVueNext from 'bootstrap-vue-next'
 
+// Bootstrap JavaScript 추가 (드롭다운 등의 기능을 위해)
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'

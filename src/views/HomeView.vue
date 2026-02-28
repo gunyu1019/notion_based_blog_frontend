@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import Wave from '@/components/WaveItem.vue'
 import HeaderNavbar from '@/components/HeaderNavbar.vue'
+import { BDropdown, BDropdownItem } from 'bootstrap-vue-next'
 
 // 라우터 초기화
 const router = useRouter()
@@ -119,6 +120,12 @@ function selectCategory(categoryId: string | null) {
     selectedCategory.value = categoryId
 }
 
+// 정렬 옵션 변경 함수
+function changeSortOption(option: 'latest' | 'popular') {
+    console.log('정렬 옵션 변경:', option) // 디버깅용
+    sortOption.value = option
+}
+
 // 더보기 버튼 클릭 핸들러
 function loadMore() {
     displayLimit.value += 5
@@ -184,40 +191,31 @@ onMounted(async () => {
 
                         <!-- 우측 (정렬 드롭다운) -->
                         <div class="sort-dropdown">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-outline-secondary dropdown-toggle"
-                                    type="button"
-                                    id="sortDropdown"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
+                            <BDropdown
+                                variant="outline-secondary"
+                                class="dropdown-toggle"
+                            >
+                                <template #button-content>
                                     <font-awesome-icon icon="sort" class="me-2" />
                                     {{ sortOption === 'latest' ? '최신순' : '조회순' }}
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                    <li>
-                                        <button
-                                            class="dropdown-item"
-                                            :class="{ active: sortOption === 'latest' }"
-                                            @click="sortOption = 'latest'"
-                                        >
-                                            <font-awesome-icon icon="clock" class="me-2" />
-                                            최신순 (등록일)
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="dropdown-item"
-                                            :class="{ active: sortOption === 'popular' }"
-                                            @click="sortOption = 'popular'"
-                                        >
-                                            <font-awesome-icon icon="eye" class="me-2" />
-                                            조회순 (인기)
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
+                                </template>
+
+                                <BDropdownItem
+                                    :active="sortOption === 'latest'"
+                                    @click="changeSortOption('latest')"
+                                >
+                                    <font-awesome-icon icon="clock" class="me-2" />
+                                    최신순 (등록일)
+                                </BDropdownItem>
+
+                                <BDropdownItem
+                                    :active="sortOption === 'popular'"
+                                    @click="changeSortOption('popular')"
+                                >
+                                    <font-awesome-icon icon="eye" class="me-2" />
+                                    조회순 (인기)
+                                </BDropdownItem>
+                            </BDropdown>
                         </div>
                     </div>
 
