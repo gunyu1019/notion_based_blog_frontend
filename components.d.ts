@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AsyncImageBlockItem: typeof import('./src/components/block/AsyncImageBlockItem.vue')['default']
     BCollapse: typeof import('bootstrap-vue-next')['BCollapse']
     BNavbar: typeof import('bootstrap-vue-next')['BNavbar']
     BNavbarBrand: typeof import('bootstrap-vue-next')['BNavbarBrand']
@@ -14,6 +15,8 @@ declare module 'vue' {
     BNavbarToggle: typeof import('bootstrap-vue-next')['BNavbarToggle']
     BNavItem: typeof import('bootstrap-vue-next')['BNavItem']
     CodeBlockItem: typeof import('./src/components/block/CodeBlockItem.vue')['default']
+    ColumnBlockItem: typeof import('./src/components/block/ColumnBlockItem.vue')['default']
+    ColumnListBlockItem: typeof import('./src/components/block/ColumnListBlockItem.vue')['default']
     FileBlockItem: typeof import('./src/components/block/FileBlockItem.vue')['default']
     HeaderNavbar: typeof import('./src/components/HeaderNavbar.vue')['default']
     NotionBlock: typeof import('./src/components/block/NotionBlock.vue')['default']

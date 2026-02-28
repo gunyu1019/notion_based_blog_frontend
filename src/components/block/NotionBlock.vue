@@ -26,6 +26,9 @@ const CodeBlockItem = defineAsyncComponent(() => import('./CodeBlockItem.vue'))
 const TableBlockItem = defineAsyncComponent(() => import('./TableBlockItem.vue'))
 const UrlBlockItem = defineAsyncComponent(() => import('./UrlBlockItem.vue'))
 const FileBlockItem = defineAsyncComponent(() => import('./FileBlockItem.vue'))
+const AsyncImageBlockItem = defineAsyncComponent(() => import('./AsyncImageBlockItem.vue'))
+const ColumnListBlockItem = defineAsyncComponent(() => import('./ColumnListBlockItem.vue'))
+const ColumnBlockItem = defineAsyncComponent(() => import('./ColumnBlockItem.vue'))
 
 interface Props {
     block: Block | CodeBlock | TableBlock | UrlBlock | FileBlock
@@ -75,7 +78,13 @@ const componentMapping: Record<string, Component> = {
     callout: TextBlockItem,
     toggle: TextBlockItem,
     divider: TextBlockItem,
-    image: TextBlockItem,
+
+    // 이미지 블록 - 비동기 CDN URL 로딩
+    image: AsyncImageBlockItem,
+
+    // 컬럼 레이아웃 블록들
+    column_list: ColumnListBlockItem,
+    column: ColumnBlockItem,
 
     // 전용 컴포넌트가 있는 블록들
     code: CodeBlockItem,
@@ -111,6 +120,19 @@ const componentProps = computed(() => {
 
     // 각 컴포넌트별로 적절한 prop 이름으로 매핑
     switch (blockType) {
+        case 'image':
+            return {
+                blockId: props.block.id
+            }
+
+        case 'column_list':
+        case 'column':
+            return {
+                block: props.block as Block,
+                depth: currentDepth.value,
+                maxDepth: props.maxDepth
+            }
+
         case 'code':
             return {
                 codeBlock: props.block as CodeBlock
