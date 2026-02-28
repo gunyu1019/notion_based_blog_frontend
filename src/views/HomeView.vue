@@ -152,6 +152,15 @@ onMounted(async () => {
     <!-- Header -->
     <HeaderNavbar />
 
+    <!-- Font Awesome 테스트 (디버깅용) -->
+    <div style="position: fixed; top: 10px; right: 10px; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px;">
+        <div>FA 테스트:
+            <font-awesome-icon :icon="['fas', 'heart']" style="color: red;" />
+            <font-awesome-icon :icon="['fas', 'star']" style="color: gold;" />
+            <font-awesome-icon :icon="['fas', 'eye']" style="color: blue;" />
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="home-container">
         <!-- Top Spacing with Wave -->
@@ -246,11 +255,11 @@ onMounted(async () => {
                                         <!-- 등록일자 및 조회수 -->
                                         <div class="card-meta">
                                             <small class="text-muted">
-                                                <i class="far fa-calendar-alt me-1"></i>
+                                                <font-awesome-icon :icon="['fas', 'calendar-days']" class="me-1" />
                                                 {{ formatDate(post.published_at || post.last_edited_time) }}
                                             </small>
                                             <small class="text-muted">
-                                                <i class="far fa-eye me-1"></i>
+                                                <font-awesome-icon :icon="['fas', 'eye']" class="me-1" />
                                                 {{ formatViews(post.hits) }}
                                             </small>
                                         </div>
@@ -280,11 +289,11 @@ onMounted(async () => {
                                     <!-- 등록일자 및 조회수 -->
                                     <div class="card-meta">
                                         <small class="text-muted">
-                                            <i class="far fa-calendar-alt me-1"></i>
+                                            <font-awesome-icon :icon="['fas', 'calendar-days']" class="me-1" />
                                             {{ formatDate(post.published_at || post.last_edited_time) }}
                                         </small>
                                         <small class="text-muted">
-                                            <i class="far fa-eye me-1"></i>
+                                            <font-awesome-icon :icon="['fas', 'eye']" class="me-1" />
                                             {{ formatViews(post.hits) }}
                                         </small>
                                     </div>
@@ -377,11 +386,11 @@ onMounted(async () => {
                                     <!-- 등록일자 및 조회수 -->
                                     <div class="post-meta">
                                         <small class="text-muted">
-                                            <i class="far fa-calendar-alt me-1"></i>
+                                            <font-awesome-icon :icon="['fas', 'calendar-days']" class="me-1" />
                                             {{ formatDate(post.published_at || post.last_edited_time) }}
                                         </small>
                                         <small class="text-muted">
-                                            <i class="far fa-eye me-1"></i>
+                                            <font-awesome-icon :icon="['fas', 'eye']" class="me-1" />
                                             {{ formatViews(post.hits) }}
                                         </small>
                                     </div>
