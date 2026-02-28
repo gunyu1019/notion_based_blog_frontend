@@ -338,14 +338,15 @@ const handleImageError = (): void => {
 <style scoped lang="scss">
 .url-block-item {
     .url-card {
-        border: 1px solid #dee2e6;
+        border: 1px solid #e1e4e8;
         border-radius: 12px;
         transition: all 0.2s ease;
-        background: #fff;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 
         &.card-clickable:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
             border-color: #007bff;
         }
 
@@ -361,11 +362,12 @@ const handleImageError = (): void => {
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
+            background: #f6f8fa;
+            border: 2px solid #e1e4e8;
 
             .url-icon {
                 font-size: 1.5rem;
+                color: #586069;
             }
         }
 
@@ -377,10 +379,10 @@ const handleImageError = (): void => {
                 margin-bottom: 0.25rem;
 
                 .url-link {
-                    color: #007bff;
+                    color: #0366d6;
 
                     &:hover {
-                        color: #0056b3;
+                        color: #005cc5;
                         text-decoration: underline !important;
                     }
 
@@ -393,9 +395,17 @@ const handleImageError = (): void => {
                         opacity: 0.7;
                     }
                 }
+
+                .text-muted {
+                    color: #6a737d !important;
+                }
             }
 
             .url-address {
+                .text-muted {
+                    color: #6a737d !important;
+                }
+
                 .url-domain {
                     font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
                     font-size: 0.85em;
@@ -405,7 +415,7 @@ const handleImageError = (): void => {
         }
 
         .url-description {
-            color: #6c757d;
+            color: #586069;
             font-size: 0.95rem;
             line-height: 1.5;
             margin-top: 0.5rem;
@@ -499,34 +509,6 @@ const handleImageError = (): void => {
             .url-actions .btn-group .btn {
                 font-size: 0.8rem;
                 padding: 0.25rem 0.5rem;
-            }
-        }
-    }
-}
-
-// 다크 모드 지원
-@media (prefers-color-scheme: dark) {
-    .url-block-item {
-        .url-card {
-            background: #212529;
-            border-color: #495057;
-            color: #fff;
-
-            .url-icon-container {
-                background: #343a40;
-                border-color: #495057;
-            }
-
-            .url-header .card-title .url-link {
-                color: #66b3ff;
-
-                &:hover {
-                    color: #4da6ff;
-                }
-            }
-
-            .url-description {
-                color: #adb5bd;
             }
         }
     }

@@ -209,15 +209,15 @@ onMounted(() => {
     margin: 1.5rem 0;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    background: #2b2b2b; // Darcula 베이스 색상
-    border: 1px solid #3c3f41;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    border: 1px solid #e1e4e8;
 }
 
 .code-block-header {
-    background: linear-gradient(135deg, #3c3f41 0%, #2b2b2b 100%);
+    background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%);
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid #555;
+    border-bottom: 1px solid #e1e4e8;
 
     .language-info {
         display: flex;
@@ -228,7 +228,12 @@ onMounted(() => {
             font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             font-weight: 500;
             background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(13, 110, 253, 0.2);
+            color: #ffffff;
+        }
+
+        .text-muted {
+            color: #6a737d !important;
         }
     }
 
@@ -236,19 +241,19 @@ onMounted(() => {
         .copy-button {
             font-size: 0.875rem;
             padding: 0.375rem 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
+            border: 1px solid #d1d5da;
+            background: #ffffff;
+            color: #586069;
             transition: all 0.2s ease;
 
             &:hover:not(:disabled) {
-                background: rgba(255, 255, 255, 0.1);
-                border-color: rgba(255, 255, 255, 0.3);
-                color: #ffffff;
+                background: #f6f8fa;
+                border-color: #c6cbd1;
+                color: #24292e;
             }
 
             &:active {
-                background: rgba(255, 255, 255, 0.15);
+                background: #edeff2;
             }
 
             &.btn-success {
@@ -271,7 +276,7 @@ onMounted(() => {
 }
 
 .code-block-content {
-    background: #2b2b2b;
+    background: #ffffff;
 
     .hljs-code {
         margin: 0;
@@ -281,7 +286,7 @@ onMounted(() => {
         font-size: 0.9rem;
         line-height: 1.6;
         overflow-x: auto;
-        color: #a9b7c6; // Darcula 기본 텍스트 색상
+        color: #24292e;
 
         code {
             background: transparent;
@@ -307,69 +312,69 @@ onMounted(() => {
             left: 0;
             bottom: 0;
             width: 3rem;
-            background: #323232;
-            border-right: 1px solid #555;
+            background: #f6f8fa;
+            border-right: 1px solid #e1e4e8;
         }
     }
 }
 
 .code-block-caption {
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-top: 1px solid #555;
+    background: #f6f8fa;
+    border-top: 1px solid #e1e4e8;
     font-size: 0.875rem;
-    color: #a9b7c6;
+    color: #586069;
     font-style: italic;
 }
 
-// 다크 테마 highlight.js 커스텀 색상 (Darcula 스타일)
+// GitHub Light 테마 highlight.js 커스텀 색상
 :deep(.hljs) {
     background: transparent;
-    color: #a9b7c6;
+    color: #24292e;
 }
 
 :deep(.hljs-keyword),
 :deep(.hljs-selector-tag),
 :deep(.hljs-built_in) {
-    color: #cc7832;
+    color: #d73a49;
 }
 
 :deep(.hljs-string),
 :deep(.hljs-title),
 :deep(.hljs-section) {
-    color: #6a8759;
+    color: #032f62;
 }
 
 :deep(.hljs-comment),
 :deep(.hljs-quote) {
-    color: #808080;
+    color: #6a737d;
     font-style: italic;
 }
 
 :deep(.hljs-number),
 :deep(.hljs-literal) {
-    color: #6897bb;
+    color: #005cc5;
 }
 
 :deep(.hljs-function),
 :deep(.hljs-class),
 :deep(.hljs-type) {
-    color: #ffc66d;
+    color: #6f42c1;
 }
 
 :deep(.hljs-variable),
 :deep(.hljs-attr) {
-    color: #9876aa;
+    color: #e36209;
 }
 
 :deep(.hljs-symbol),
 :deep(.hljs-bullet),
 :deep(.hljs-meta) {
-    color: #bbb529;
+    color: #d73a49;
 }
 
 :deep(.hljs-operator) {
-    color: #a9b7c6;
+    color: #d73a49;
 }
 
 :deep(.hljs-emphasis) {
@@ -383,16 +388,16 @@ onMounted(() => {
 // 스크롤바 커스터마이징 (webkit 브라우저)
 .hljs-code::-webkit-scrollbar {
     height: 8px;
-    background: #2b2b2b;
+    background: #f6f8fa;
 }
 
 .hljs-code::-webkit-scrollbar-thumb {
-    background: #555;
+    background: #d1d5da;
     border-radius: 4px;
 }
 
 .hljs-code::-webkit-scrollbar-thumb:hover {
-    background: #666;
+    background: #c6cbd1;
 }
 
 // 반응형 디자인
