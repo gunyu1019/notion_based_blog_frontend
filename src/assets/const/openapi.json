@@ -1,0 +1,513 @@
+{
+    "openapi": "3.1.0",
+    "info": { "title": "FastAPI", "version": "0.1.0" },
+    "paths": {
+        "/content": {
+            "get": {
+                "summary": "Content",
+                "operationId": "content_content_get",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": { "type": "string", "format": "uuid", "title": "Item Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": { "$ref": "#/components/schemas/Content" },
+                                    "title": "Response Content Content Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posts": {
+            "get": {
+                "summary": "List Of Posts",
+                "operationId": "list_of_posts_posts_get",
+                "parameters": [
+                    {
+                        "name": "private_access",
+                        "in": "query",
+                        "required": false,
+                        "schema": { "type": "boolean", "default": false, "title": "Private Access" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": { "$ref": "#/components/schemas/PostItem" },
+                                    "title": "Response List Of Posts Posts Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/post": {
+            "get": {
+                "summary": "Post Info",
+                "operationId": "post_info_post_get",
+                "parameters": [
+                    {
+                        "name": "post_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": { "type": "string", "format": "uuid", "title": "Post Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/PostItemDetail" }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Block": {
+                "properties": {
+                    "id": { "type": "string", "format": "uuid", "title": "Id" },
+                    "type": { "type": "string", "title": "Type" },
+                    "has_children": {
+                        "type": "boolean",
+                        "title": "Has Children",
+                        "default": false
+                    },
+                    "children": {
+                        "items": {
+                            "anyOf": [
+                                { "$ref": "#/components/schemas/CodeBlock" },
+                                { "$ref": "#/components/schemas/TableBlock" },
+                                { "$ref": "#/components/schemas/UrlBlock" },
+                                { "$ref": "#/components/schemas/Block" },
+                                { "$ref": "#/components/schemas/FileBlock" }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Children"
+                    },
+                    "text": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Text"
+                    },
+                    "captions": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Captions"
+                    },
+                    "is_file_available": {
+                        "type": "boolean",
+                        "title": "Is File Available",
+                        "default": false
+                    }
+                },
+                "type": "object",
+                "required": ["id", "type"],
+                "title": "Block"
+            },
+            "Category": {
+                "properties": {
+                    "name": { "type": "string", "title": "Name" },
+                    "id": { "type": "string", "title": "Id" }
+                },
+                "type": "object",
+                "required": ["name", "id"],
+                "title": "Category"
+            },
+            "CodeBlock": {
+                "properties": {
+                    "id": { "type": "string", "format": "uuid", "title": "Id" },
+                    "type": { "type": "string", "const": "code", "title": "Type" },
+                    "has_children": {
+                        "type": "boolean",
+                        "title": "Has Children",
+                        "default": false
+                    },
+                    "children": {
+                        "items": {
+                            "anyOf": [
+                                { "$ref": "#/components/schemas/CodeBlock" },
+                                { "$ref": "#/components/schemas/TableBlock" },
+                                { "$ref": "#/components/schemas/UrlBlock" },
+                                { "$ref": "#/components/schemas/Block" },
+                                { "$ref": "#/components/schemas/FileBlock" }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Children"
+                    },
+                    "text": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Text"
+                    },
+                    "captions": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Captions"
+                    },
+                    "is_file_available": {
+                        "type": "boolean",
+                        "title": "Is File Available",
+                        "default": false
+                    },
+                    "language": { "type": "string", "title": "Language", "readOnly": true }
+                },
+                "type": "object",
+                "required": ["id", "type", "language"],
+                "title": "CodeBlock"
+            },
+            "Content": {
+                "properties": {
+                    "extra_key": { "type": "string", "title": "Extra Key" },
+                    "url": { "type": "string", "title": "Url" },
+                    "expiry_time": {
+                        "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+                        "title": "Expiry Time"
+                    }
+                },
+                "type": "object",
+                "required": ["extra_key", "url", "expiry_time"],
+                "title": "Content"
+            },
+            "File": {
+                "properties": {
+                    "type": { "type": "string", "title": "Type" },
+                    "url": { "type": "string", "title": "Url", "readOnly": true },
+                    "expiry_time": {
+                        "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+                        "title": "Expiry Time",
+                        "readOnly": true
+                    }
+                },
+                "type": "object",
+                "required": ["type", "url", "expiry_time"],
+                "title": "File"
+            },
+            "FileBlock": {
+                "properties": {
+                    "id": { "type": "string", "format": "uuid", "title": "Id" },
+                    "type": { "type": "string", "const": "file", "title": "Type" },
+                    "has_children": {
+                        "type": "boolean",
+                        "title": "Has Children",
+                        "default": false
+                    },
+                    "children": {
+                        "items": {
+                            "anyOf": [
+                                { "$ref": "#/components/schemas/CodeBlock" },
+                                { "$ref": "#/components/schemas/TableBlock" },
+                                { "$ref": "#/components/schemas/UrlBlock" },
+                                { "$ref": "#/components/schemas/Block" },
+                                { "$ref": "#/components/schemas/FileBlock" }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Children"
+                    },
+                    "text": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Text"
+                    },
+                    "captions": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Captions"
+                    },
+                    "is_file_available": {
+                        "type": "boolean",
+                        "title": "Is File Available",
+                        "default": false
+                    },
+                    "file": { "$ref": "#/components/schemas/File" }
+                },
+                "type": "object",
+                "required": ["id", "type", "file"],
+                "title": "FileBlock"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": { "$ref": "#/components/schemas/ValidationError" },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "PostItem": {
+                "properties": {
+                    "id": { "type": "string", "format": "uuid", "title": "Id" },
+                    "title": { "type": "string", "title": "Title" },
+                    "description": {
+                        "type": "string",
+                        "title": "Description",
+                        "default": "ë¯¸ë¦¬ë³´ê¸° ì—†ìŒ"
+                    },
+                    "category": {
+                        "items": { "$ref": "#/components/schemas/Category" },
+                        "type": "array",
+                        "title": "Category"
+                    },
+                    "thumbnail_url": {
+                        "anyOf": [{ "type": "string" }, { "type": "null" }],
+                        "title": "Thumbnail Url"
+                    },
+                    "hits": { "type": "integer", "title": "Hits", "default": 0 },
+                    "published_at": {
+                        "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+                        "title": "Published At"
+                    },
+                    "last_edited_time": {
+                        "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+                        "title": "Last Edited Time"
+                    }
+                },
+                "type": "object",
+                "required": ["id", "title", "last_edited_time"],
+                "title": "PostItem"
+            },
+            "PostItemDetail": {
+                "properties": {
+                    "id": { "type": "string", "format": "uuid", "title": "Id" },
+                    "title": { "type": "string", "title": "Title" },
+                    "description": {
+                        "type": "string",
+                        "title": "Description",
+                        "default": "ë¯¸ë¦¬ë³´ê¸° ì—†ìŒ"
+                    },
+                    "category": {
+                        "items": { "$ref": "#/components/schemas/Category" },
+                        "type": "array",
+                        "title": "Category"
+                    },
+                    "thumbnail_url": {
+                        "anyOf": [{ "type": "string" }, { "type": "null" }],
+                        "title": "Thumbnail Url"
+                    },
+                    "hits": { "type": "integer", "title": "Hits", "default": 0 },
+                    "published_at": {
+                        "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+                        "title": "Published At"
+                    },
+                    "last_edited_time": {
+                        "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+                        "title": "Last Edited Time"
+                    },
+                    "content": {
+                        "items": {
+                            "anyOf": [
+                                { "$ref": "#/components/schemas/CodeBlock" },
+                                { "$ref": "#/components/schemas/TableBlock" },
+                                { "$ref": "#/components/schemas/UrlBlock" },
+                                { "$ref": "#/components/schemas/Block" },
+                                { "$ref": "#/components/schemas/FileBlock" }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Content"
+                    }
+                },
+                "type": "object",
+                "required": ["id", "title", "last_edited_time"],
+                "title": "PostItemDetail"
+            },
+            "RichText": {
+                "properties": {
+                    "text": { "type": "string", "title": "Text" },
+                    "type": { "type": "string", "title": "Type" },
+                    "bold": { "type": "boolean", "title": "Bold", "default": false },
+                    "italic": { "type": "boolean", "title": "Italic", "default": false },
+                    "strikethrough": {
+                        "type": "boolean",
+                        "title": "Strikethrough",
+                        "default": false
+                    },
+                    "underline": { "type": "boolean", "title": "Underline", "default": false },
+                    "code": { "type": "boolean", "title": "Code", "default": false },
+                    "plain_text": {
+                        "anyOf": [{ "type": "string" }, { "type": "null" }],
+                        "title": "Plain Text"
+                    },
+                    "href": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Href" }
+                },
+                "type": "object",
+                "required": ["text", "type"],
+                "title": "RichText"
+            },
+            "TableBlock": {
+                "properties": {
+                    "id": { "type": "string", "format": "uuid", "title": "Id" },
+                    "type": { "type": "string", "const": "table", "title": "Type" },
+                    "has_children": {
+                        "type": "boolean",
+                        "title": "Has Children",
+                        "default": false
+                    },
+                    "children": {
+                        "items": {
+                            "anyOf": [
+                                { "$ref": "#/components/schemas/CodeBlock" },
+                                { "$ref": "#/components/schemas/TableBlock" },
+                                { "$ref": "#/components/schemas/UrlBlock" },
+                                { "$ref": "#/components/schemas/Block" },
+                                { "$ref": "#/components/schemas/FileBlock" }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Children"
+                    },
+                    "text": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Text"
+                    },
+                    "captions": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Captions"
+                    },
+                    "is_file_available": {
+                        "type": "boolean",
+                        "title": "Is File Available",
+                        "default": false
+                    },
+                    "has_row_header": {
+                        "type": "boolean",
+                        "title": "Has Row Header",
+                        "readOnly": true
+                    },
+                    "has_column_header": {
+                        "type": "boolean",
+                        "title": "Has Column Header",
+                        "readOnly": true
+                    },
+                    "width": { "type": "integer", "title": "Width", "readOnly": true },
+                    "height": { "type": "integer", "title": "Height", "readOnly": true }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "type",
+                    "has_row_header",
+                    "has_column_header",
+                    "width",
+                    "height"
+                ],
+                "title": "TableBlock"
+            },
+            "UrlBlock": {
+                "properties": {
+                    "id": { "type": "string", "format": "uuid", "title": "Id" },
+                    "type": {
+                        "type": "string",
+                        "enum": ["bookmark", "embed", "link_preview"],
+                        "title": "Type"
+                    },
+                    "has_children": {
+                        "type": "boolean",
+                        "title": "Has Children",
+                        "default": false
+                    },
+                    "children": {
+                        "items": {
+                            "anyOf": [
+                                { "$ref": "#/components/schemas/CodeBlock" },
+                                { "$ref": "#/components/schemas/TableBlock" },
+                                { "$ref": "#/components/schemas/UrlBlock" },
+                                { "$ref": "#/components/schemas/Block" },
+                                { "$ref": "#/components/schemas/FileBlock" }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Children"
+                    },
+                    "text": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Text"
+                    },
+                    "captions": {
+                        "items": { "$ref": "#/components/schemas/RichText" },
+                        "type": "array",
+                        "title": "Captions"
+                    },
+                    "is_file_available": {
+                        "type": "boolean",
+                        "title": "Is File Available",
+                        "default": false
+                    },
+                    "url": { "type": "string", "title": "Url", "readOnly": true }
+                },
+                "type": "object",
+                "required": ["id", "type", "url"],
+                "title": "UrlBlock"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": { "type": "string", "title": "Message" },
+                    "type": { "type": "string", "title": "Error Type" },
+                    "input": { "title": "Input" },
+                    "ctx": { "type": "object", "title": "Context" }
+                },
+                "type": "object",
+                "required": ["loc", "msg", "type"],
+                "title": "ValidationError"
+            }
+        }
+    }
+}

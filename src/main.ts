@@ -1,5 +1,5 @@
-import './assets/main.scss'
-import './assets/github-light-theme.scss' // GitHub Light 테마
+import '@/assets/style/main.scss'
+import '@/assets/style/github-light-theme.scss' // GitHub Light 테마
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
