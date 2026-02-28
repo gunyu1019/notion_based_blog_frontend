@@ -1,31 +1,24 @@
 <script lang="ts" setup>
-import Wave from '@/components/WaveItem.vue'
-import router from '@/router';
-import { usePostItemDetailStore } from '@/stores/postItemDetail';
-import { storeToRefs } from 'pinia';
-import { onMounted } from 'vue';
-import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
-const postItemStore = usePostItemDetailStore()
-const { content } = storeToRefs(postItemStore)
+const router = useRouter()
 
 onMounted(() => {
-    if (route.query.post_id === undefined) {
-        router.push('home')
+    // 기존 쿼리 파라미터 방식에서 새로운 라우트 파라미터 방식으로 리다이렉트
+    if (route.query.post_id) {
+        router.replace(`/post/${route.query.post_id}`)
+    } else {
+        router.replace('/')
     }
-    postItemStore.fetchContent(route.query.post_id as string)
 })
 </script>
 
 <template>
-    <div class="wrapper"></div>
-    <Wave type="1" />
-    <div class="wrapper" style="background: #373b3e"></div>
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">페이지를 이동하는 중...</span>
+        </div>
+    </div>
 </template>
-
-<style lang="scss" scoped>
-div.wrapper {
-    padding: 100px 0;
-}
-</style>

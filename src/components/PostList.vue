@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, Ref } from 'vue'
-import type { PostItem } from '@/types/PostItem'
+import { ref, type Ref } from 'vue'
+import type { PostItem } from '@/api/generated/api'
 
 const props = defineProps<{
     title: String

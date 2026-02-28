@@ -12,9 +12,9 @@ defineProps<{
             v-bind:style="{
                 textDecoration: `${richText.underline === true ? 'underline' : ''}
                     ${richText.strikethrough === true ? 'line-through' : ''}`,
-                fontWeight: richText.bold === true ? 'bold' : 'undefined',
+                fontWeight: richText.bold === true ? 'bold' : 'normal',
                 fontStyle: richText.italic ? 'italic' : 'normal',
-                color: richText.color ?? 'undefined'
+                ...(richText.color && { color: richText.color as string })
             }"
             >{{ richText.text }}</span
         >
@@ -24,9 +24,9 @@ defineProps<{
         v-bind:style="{
             textDecoration: `${richText.underline === true ? 'underline' : ''}
                 ${richText.strikethrough === true ? 'line-through' : ''}`,
-            fontWeight: richText.bold === true ? 'bold' : 'undefined',
+            fontWeight: richText.bold === true ? 'bold' : 'normal',
             fontStyle: richText.italic ? 'italic' : 'normal',
-            color: richText.color ?? 'undefined'
+            ...(richText.color && { color: richText.color as string })
         }"
         >{{ richText.text }}</span
     >
