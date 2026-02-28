@@ -23,9 +23,9 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             scss: {
-                // Sass Legacy API 경고 숨김 (Vite 4.x에서 modern-compiler 미지원)
-                silenceDeprecations: ['legacy-js-api'],
-                // Sass @import 경고도 함께 숨김
+                // Sass Legacy API 및 import 경고 숨김
+                silenceDeprecations: ['legacy-js-api', 'import'],
+                // 외부 의존성의 경고도 숨김
                 quietDeps: true
             }
         }
