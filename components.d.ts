@@ -13,6 +13,7 @@ declare module 'vue' {
     BNavbarNav: typeof import('bootstrap-vue-next')['BNavbarNav']
     BNavbarToggle: typeof import('bootstrap-vue-next')['BNavbarToggle']
     BNavItem: typeof import('bootstrap-vue-next')['BNavItem']
+    CodeBlockRenderer: typeof import('./src/components/blocks/CodeBlockRenderer.vue')['default']
     HeaderNavbar: typeof import('./src/components/HeaderNavbar.vue')['default']
     NotionBlock: typeof import('./src/components/NotionBlock.vue')['default']
     PostList: typeof import('./src/components/PostList.vue')['default']

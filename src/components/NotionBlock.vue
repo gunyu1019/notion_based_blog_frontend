@@ -14,20 +14,7 @@
         </h3>
 
         <!-- 코드 블록 -->
-        <div v-else-if="block.type === 'code'" class="mb-4">
-            <div
-                class="d-flex justify-content-between align-items-center bg-dark text-light px-3 py-2 rounded-top"
-            >
-                <span class="badge bg-secondary">{{ getCodeLanguage() }}</span>
-                <i class="fas fa-code"></i>
-            </div>
-            <pre
-                class="bg-light border rounded-bottom mb-0 p-3"
-            ><code>{{ getCodeText() }}</code></pre>
-            <div v-if="block.captions && block.captions.length > 0" class="text-muted small mt-1">
-                <RichTextRenderer :rich-texts="block.captions" />
-            </div>
-        </div>
+        <CodeBlockRenderer v-else-if="block.type === 'code'" :code-block="block as CodeBlock" />
 
         <!-- 테이블 블록 -->
         <div v-else-if="block.type === 'table'" class="mb-4">
@@ -184,6 +171,7 @@
 
 <script setup lang="ts">
 import RichTextRenderer from './RichTextRenderer.vue'
+import CodeBlockRenderer from './blocks/CodeBlockRenderer.vue'
 import type { Block, CodeBlock, TableBlock, UrlBlock, FileBlock } from '@/api/generated/api'
 
 interface Props {
@@ -191,26 +179,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
-/**
- * 코드 블록의 언어 정보 추출
- */
-const getCodeLanguage = (): string => {
-    if ('language' in props.block) {
-        return props.block.language || 'text'
-    }
-    return 'text'
-}
-
-/**
- * 코드 블록의 텍스트 내용 추출
- */
-const getCodeText = (): string => {
-    if (props.block.text && props.block.text.length > 0) {
-        return props.block.text.map((t) => t.text).join('')
-    }
-    return ''
-}
 
 /**
  * 테이블 블록의 데이터 파싱

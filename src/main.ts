@@ -1,4 +1,5 @@
 import './assets/main.scss'
+import './assets/darcula-theme.scss' // 커스텀 Darcula 테마
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
