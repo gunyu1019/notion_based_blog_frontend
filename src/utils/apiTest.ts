@@ -4,6 +4,7 @@
  */
 
 import { extendedApi } from '@/api'
+import { apiHelpers } from '@/utils/apiUtils'
 
 /**
  * API 연결 상태를 테스트합니다.
@@ -56,5 +57,24 @@ export const logCurrentApiConfig = (): void => {
     console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL)
     console.log('API Target:', import.meta.env.VITE_API_TARGET)
     console.log('Debug 모드:', import.meta.env.VITE_DEBUG_MODE)
+    console.groupEnd()
+}
+
+/**
+ * URL 생성 검증 테스트
+ */
+export const testUrlGeneration = (): void => {
+    console.group('🔍 URL 생성 검증 테스트')
+
+    // API 헬퍼 함수들의 URL 생성 테스트
+    console.log('Posts URL:', apiHelpers.getPosts({ private_access: false }))
+    console.log('Post URL:', apiHelpers.getPost('test-id'))
+    console.log('Content URL:', apiHelpers.getContent('test-item-id'))
+
+    // 예상 결과 출력
+    console.log('\n예상 결과:')
+    console.log('- 개발 환경: /posts, /post?post_id=test-id, /content?item_id=test-item-id')
+    console.log('- Axios가 /api를 앞에 붙여서: /api/posts, /api/post?post_id=test-id, /api/content?item_id=test-item-id')
+
     console.groupEnd()
 }
