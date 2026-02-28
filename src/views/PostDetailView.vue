@@ -144,8 +144,7 @@ import { useRoute, useRouter } from 'vue-router'
 import HeaderNavbar from '@/components/HeaderNavbar.vue'
 import WaveItem from '@/components/WaveItem.vue'
 import NotionBlock from '@/components/block/NotionBlock.vue'
-import { DefaultApi } from '@/api/generated/api'
-import type { PostItemDetail } from '@/api/generated/api'
+import { extendedApi, type PostItemDetail } from '@/api'
 
 // 컴포넌트 별칭
 const Wave = WaveItem
@@ -158,8 +157,6 @@ const postDetail = ref<PostItemDetail | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
-// API 인스턴스
-const api = new DefaultApi()
 
 /**
  * 게시글 데이터 가져오기
@@ -169,7 +166,7 @@ const fetchPostDetail = async (postId: string) => {
         loading.value = true
         error.value = null
 
-        const response = await api.postInfoPostGet(postId)
+        const response = await extendedApi.getPost(postId)
         postDetail.value = response.data
     } catch (err: any) {
         console.error('Failed to fetch post detail:', err)

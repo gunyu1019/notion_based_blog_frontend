@@ -5,74 +5,25 @@
 
 // 기본 API URL 설정
 const getBaseURL = (): string => {
+    // 개발 환경에서는 Axios 인스턴스가 이미 /api baseURL을 가지므로 빈 문자열 반환
     if (import.meta.env.DEV) {
-        return '/api'
+        return ''
     }
+    // 배포 환경에서는 전체 API URL 사용
     return import.meta.env.VITE_API_BASE_URL || 'https://your-production-api.com'
-}
-
-// WebSocket URL 설정
-export const getWebSocketURL = (): string => {
-    if (import.meta.env.DEV) {
-        return '/ws'
-    }
-    return import.meta.env.VITE_WS_BASE_URL || 'wss://your-production-api.com/ws'
-}
-
-// 정적 파일 URL 설정
-export const getStaticURL = (path: string): string => {
-    const baseStaticURL = import.meta.env.DEV
-        ? '/static'
-        : (import.meta.env.VITE_STATIC_BASE_URL || 'https://your-production-api.com/static')
-    return `${baseStaticURL}${path.startsWith('/') ? path : '/' + path}`
-}
-
-// 미디어 파일 URL 설정
-export const getMediaURL = (path: string): string => {
-    const baseMediaURL = import.meta.env.DEV
-        ? '/media'
-        : (import.meta.env.VITE_MEDIA_BASE_URL || 'https://your-production-api.com/media')
-    return `${baseMediaURL}${path.startsWith('/') ? path : '/' + path}`
 }
 
 /**
  * API 엔드포인트 상수 정의
+ * 실제 백엔드에 구현된 엔드포인트만 포함
  */
 export const API_ENDPOINTS = {
     // 게시글 관련
-    POSTS: '/posts',           // 게시글 목록
-    POST: '/post',            // 단일 게시글
-    POST_DETAIL: (id: string | number) => `/post/${id}`,  // 게시글 상세
+    POSTS: '/posts',           // 게시글 목록 (list_of_posts_posts_get)
+    POST: '/post',            // 단일 게시글 (post_info_post_get)
 
     // 콘텐츠 관련
-    CONTENT: '/content',      // 콘텐츠 목록
-    CONTENT_DETAIL: (id: string | number) => `/content/${id}`,  // 콘텐츠 상세
-
-    // 카테고리 관련
-    CATEGORIES: '/categories', // 카테고리 목록
-    CATEGORY: (id: string | number) => `/category/${id}`,  // 특정 카테고리
-
-    // 태그 관련
-    TAGS: '/tags',            // 태그 목록
-    TAG: (id: string | number) => `/tag/${id}`,           // 특정 태그
-
-    // 검색 관련
-    SEARCH: '/search',        // 검색
-    SEARCH_POSTS: '/search/posts',      // 게시글 검색
-    SEARCH_CONTENT: '/search/content',  // 콘텐츠 검색
-
-    // 통계 관련
-    STATS: '/stats',          // 전체 통계
-    STATS_POPULAR: '/stats/popular',    // 인기 게시글
-    STATS_RECENT: '/stats/recent',      // 최근 게시글
-
-    // 사용자 관련 (필요시)
-    USER: '/user',            // 사용자 정보
-    AUTH: '/auth',            // 인증
-
-    // 파일 업로드
-    UPLOAD: '/upload',        // 파일 업로드
-    UPLOAD_IMAGE: '/upload/image',      // 이미지 업로드
+    CONTENT: '/content',      // 콘텐츠 (content_content_get)
 } as const
 
 /**
@@ -106,30 +57,20 @@ export const buildApiURLWithParams = (
 
 /**
  * API 요청 헬퍼 함수들
+ * 실제 백엔드 API 파라미터에 맞게 구성
  */
 export const apiHelpers = {
-    // 게시글 관련
-    getPosts: (params?: { category?: string; tag?: string; limit?: number; offset?: number }) =>
+    // 게시글 목록 - private_access 파라미터 지원
+    getPosts: (params?: { private_access?: boolean }) =>
         buildApiURLWithParams(API_ENDPOINTS.POSTS, params || {}),
 
-    getPost: (id: string | number) => buildApiURL(API_ENDPOINTS.POST_DETAIL(id)),
+    // 단일 게시글 - post_id 파라미터 필요
+    getPost: (postId: string) =>
+        buildApiURLWithParams(API_ENDPOINTS.POST, { post_id: postId }),
 
-    // 콘텐츠 관련
-    getContent: (params?: { type?: string; limit?: number; offset?: number }) =>
-        buildApiURLWithParams(API_ENDPOINTS.CONTENT, params || {}),
-
-    getContentDetail: (id: string | number) => buildApiURL(API_ENDPOINTS.CONTENT_DETAIL(id)),
-
-    // 카테고리 관련
-    getCategories: () => buildApiURL(API_ENDPOINTS.CATEGORIES),
-    getCategory: (id: string | number) => buildApiURL(API_ENDPOINTS.CATEGORY(id)),
-
-    // 검색 관련
-    searchPosts: (query: string, params?: { limit?: number; offset?: number }) =>
-        buildApiURLWithParams(API_ENDPOINTS.SEARCH_POSTS, { q: query, ...params }),
-
-    searchContent: (query: string, params?: { limit?: number; offset?: number }) =>
-        buildApiURLWithParams(API_ENDPOINTS.SEARCH_CONTENT, { q: query, ...params }),
+    // 콘텐츠 - item_id 파라미터 필요
+    getContent: (itemId: string) =>
+        buildApiURLWithParams(API_ENDPOINTS.CONTENT, { item_id: itemId }),
 }
 
 /**
@@ -141,23 +82,8 @@ export const logApiConfig = (): void => {
         console.log('환경:', import.meta.env.MODE)
         console.log('개발 모드:', import.meta.env.DEV)
         console.log('API Base URL:', getBaseURL())
-        console.log('WebSocket URL:', getWebSocketURL())
-        console.log('Static URL:', getStaticURL('/'))
-        console.log('Media URL:', getMediaURL('/'))
         console.log('Available Endpoints:', Object.keys(API_ENDPOINTS))
         console.groupEnd()
     }
 }
 
-// 기본 export
-export default {
-    getBaseURL,
-    getWebSocketURL,
-    getStaticURL,
-    getMediaURL,
-    buildApiURL,
-    buildApiURLWithParams,
-    API_ENDPOINTS,
-    apiHelpers,
-    logApiConfig
-}

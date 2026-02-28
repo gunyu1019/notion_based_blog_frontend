@@ -1,8 +1,9 @@
 /**
  * API 연결 상태를 확인하는 유틸리티
+ * 실제 구현된 API 엔드포인트만 테스트
  */
 
-import { blogApi } from '@/api'
+import { extendedApi } from '@/api'
 
 /**
  * API 연결 상태를 테스트합니다.
@@ -10,24 +11,50 @@ import { blogApi } from '@/api'
  */
 export const testApiConnection = async (): Promise<boolean> => {
     try {
-        // 실제 API 엔드포인트에 따라 수정해야 할 수 있습니다
-        await blogApi.defaultApiPostsGet()
-        console.log('✅ API 연결 성공')
+        console.log('🔍 API 연결 테스트 시작...')
+
+        // 게시글 목록 API 테스트 (실제 구현된 API 사용)
+        await extendedApi.getPosts({ private_access: false })
+        console.log('✅ /posts API 연결 성공')
         return true
     } catch (error) {
-        console.error('❌ API 연결 실패:', error)
+        console.error('❌ 기본 API 연결 실패:', error)
         return false
     }
 }
 
 /**
+ * 프록시 설정 테스트
+ */
+export const testProxyConfiguration = async (): Promise<void> => {
+    console.group('🔧 프록시 설정 테스트')
+
+    try {
+        // 실제 프록시 경로로 직접 요청
+        const response = await fetch('/api/posts?private_access=false')
+
+        if (response.ok) {
+            console.log('✅ 프록시를 통한 직접 요청 성공:', response.status)
+        } else {
+            console.error('❌ 프록시 응답 오류:', response.status)
+        }
+
+    } catch (error) {
+        console.error('❌ 프록시 설정 테스트 실패:', error)
+    }
+
+    console.groupEnd()
+}
+
+/**
  * 현재 API 설정 정보를 출력합니다.
  */
-export const logApiConfig = (): void => {
-    console.group('📊 API 설정 정보')
+export const logCurrentApiConfig = (): void => {
+    console.group('📊 현재 API 설정 정보')
     console.log('환경:', import.meta.env.MODE)
     console.log('개발 모드:', import.meta.env.DEV)
     console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL)
     console.log('API Target:', import.meta.env.VITE_API_TARGET)
+    console.log('Debug 모드:', import.meta.env.VITE_DEBUG_MODE)
     console.groupEnd()
 }

@@ -36,7 +36,7 @@ export default defineConfig({
         host: true, // 네트워크에서 접근 가능하도록 설정
         // CORS 해결을 위한 프록시 설정
         proxy: {
-            // 모든 API 요청을 백엔드로 프록시
+            // API 요청을 백엔드로 프록시
             '/api': {
                 target: process.env.VITE_API_TARGET || 'http://localhost:8000',
                 changeOrigin: true,
@@ -54,25 +54,6 @@ export default defineConfig({
                         console.log('📥 프록시 응답:', proxyRes.statusCode, req.url);
                     });
                 }
-            },
-            // WebSocket 지원 (실시간 업데이트용)
-            '/ws': {
-                target: process.env.VITE_API_TARGET || 'http://localhost:8000',
-                changeOrigin: true,
-                ws: true,
-                secure: false
-            },
-            // 정적 파일 프록시 (이미지, 파일 등)
-            '/static': {
-                target: process.env.VITE_API_TARGET || 'http://localhost:8000',
-                changeOrigin: true,
-                secure: false
-            },
-            // 업로드된 미디어 파일 프록시
-            '/media': {
-                target: process.env.VITE_API_TARGET || 'http://localhost:8000',
-                changeOrigin: true,
-                secure: false
             }
         },
         // CORS 설정 (추가적인 보안)

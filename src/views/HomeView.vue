@@ -3,8 +3,12 @@ import { usePostItemStore } from '@/stores/postItem'
 import { useCategoryStore } from '@/stores/category'
 import { onMounted, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 import Wave from '@/components/WaveItem.vue'
 import HeaderNavbar from '@/components/HeaderNavbar.vue'
+
+// 라우터 초기화
+const router = useRouter()
 
 // 스토어 초기화
 const postItemStore = usePostItemStore()
@@ -13,7 +17,7 @@ const { content } = storeToRefs(postItemStore)
 
 // 상태 관리 (State)
 const selectedCategory = ref<string | null>(null)
-const sortOption = ref<'latest' | 'views'>('latest')
+const sortOption = ref<'latest' | 'popular'>('latest')
 const displayLimit = ref<number>(5)
 
 // 카테고리 추출 (Computed)
@@ -41,15 +45,30 @@ const filteredAndSortedPosts = computed(() => {
         )
     }
 
-    // 정렬
+    // 고도화된 정렬 알고리즘
     if (sortOption.value === 'latest') {
+        // 최신순: published_at 또는 last_edited_time 기준 내림차순
         filtered = [...filtered].sort((a, b) => {
             const dateA = a.published_at ? new Date(a.published_at).getTime() : a.last_edited_time ? new Date(a.last_edited_time).getTime() : 0
             const dateB = b.published_at ? new Date(b.published_at).getTime() : b.last_edited_time ? new Date(b.last_edited_time).getTime() : 0
             return dateB - dateA
         })
-    } else {
-        filtered = [...filtered].sort((a, b) => Number(b.hits || 0) - Number(a.hits || 0))
+    } else if (sortOption.value === 'popular') {
+        // 인기순: 1차로 hits 내림차순, 2차로 날짜 내림차순 (다중 조건 정렬)
+        filtered = [...filtered].sort((a, b) => {
+            const hitsA = Number(a.hits || 0)
+            const hitsB = Number(b.hits || 0)
+
+            // 1차 정렬: 조회수 비교
+            if (hitsA !== hitsB) {
+                return hitsB - hitsA
+            }
+
+            // 2차 정렬: 조회수가 같으면 날짜로 정렬
+            const dateA = a.published_at ? new Date(a.published_at).getTime() : a.last_edited_time ? new Date(a.last_edited_time).getTime() : 0
+            const dateB = b.published_at ? new Date(b.published_at).getTime() : b.last_edited_time ? new Date(b.last_edited_time).getTime() : 0
+            return dateB - dateA
+        })
     }
 
     return filtered
@@ -103,6 +122,11 @@ function selectCategory(categoryId: string | null) {
 // 더보기 버튼 클릭 핸들러
 function loadMore() {
     displayLimit.value += 5
+}
+
+// 포스트 상세 페이지로 이동하는 함수
+function navigateToPost(postId: string) {
+    router.push(`/post/${postId}`)
 }
 
 // 컴포넌트 마운트 시 데이터 로드
@@ -185,8 +209,8 @@ onMounted(async () => {
                                     <li>
                                         <button
                                             class="dropdown-item"
-                                            :class="{ active: sortOption === 'views' }"
-                                            @click="sortOption = 'views'"
+                                            :class="{ active: sortOption === 'popular' }"
+                                            @click="sortOption = 'popular'"
                                         >
                                             <i class="fas fa-eye me-2"></i>
                                             조회순 (인기)
@@ -205,42 +229,79 @@ onMounted(async () => {
                         </h2>
                         <div class="row g-4">
                             <div v-for="post in topPosts" :key="post.id" class="col-md-4">
-                                <div class="card h-100 highlight-card">
-                                    <!-- 썸네일 이미지 또는 미리보기 텍스트 -->
-                                    <div v-if="post.thumbnail_url" class="card-img-top-wrapper">
+
+                                <!-- Case A: 썸네일이 있는 경우 -->
+                                <div v-if="post.thumbnail_url"
+                                     class="card h-100 highlight-card-with-thumbnail"
+                                     @click="navigateToPost(post.id)">
+                                    <!-- 썸네일 이미지 -->
+                                    <div class="card-img-top-wrapper">
                                         <img
                                             :src="post.thumbnail_url"
                                             :alt="post.title"
                                             class="card-img-top"
                                         />
                                     </div>
-                                    <div v-else class="card-preview-text">
-                                        <p>{{ truncateDescription(post.description, 80) }}</p>
-                                    </div>
-
                                     <div class="card-body">
+                                        <!-- 블로그 제목 (fw-bold) -->
                                         <h5 class="card-title">{{ post.title }}</h5>
-                                        <div class="card-meta d-flex justify-content-between align-items-center">
+                                        <!-- 등록일자 및 조회수 -->
+                                        <div class="card-meta">
                                             <small class="text-muted">
-                                                <i class="fas fa-calendar-alt me-1"></i>
+                                                <i class="far fa-calendar-alt me-1"></i>
                                                 {{ formatDate(post.published_at || post.last_edited_time) }}
                                             </small>
                                             <small class="text-muted">
-                                                <i class="fas fa-eye me-1"></i>
+                                                <i class="far fa-eye me-1"></i>
                                                 {{ formatViews(post.hits) }}
                                             </small>
                                         </div>
-                                        <div class="card-categories mt-2">
+                                        <!-- 카테고리 -->
+                                        <div class="card-categories">
                                             <span
                                                 v-for="category in post.category"
                                                 :key="category.id"
-                                                class="badge bg-light text-dark me-1"
+                                                class="badge bg-light text-dark"
                                             >
                                                 {{ category.name }}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Case B: 썸네일이 없는 경우 -->
+                                <div v-else
+                                     class="card h-100 highlight-card-no-thumbnail"
+                                     @click="navigateToPost(post.id)">
+                                    <!-- 블로그 제목 (fw-bold) -->
+                                    <h5 class="card-title">{{ post.title }}</h5>
+                                    <!-- 블로그 미리보기 글 전체 -->
+                                    <p class="card-description" v-if="post.description && post.description !== '미리보기 없음'">
+                                        {{ post.description }}
+                                    </p>
+                                    <!-- 등록일자 및 조회수 -->
+                                    <div class="card-meta">
+                                        <small class="text-muted">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            {{ formatDate(post.published_at || post.last_edited_time) }}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="far fa-eye me-1"></i>
+                                            {{ formatViews(post.hits) }}
+                                        </small>
+                                    </div>
+                                    <!-- 카테고리 -->
+                                    <div class="card-categories">
+                                        <span
+                                            v-for="category in post.category"
+                                            :key="category.id"
+                                            class="badge bg-light text-dark"
+                                        >
+                                            {{ category.name }}
+                                        </span>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </section>
@@ -259,10 +320,14 @@ onMounted(async () => {
                                 :key="post.id"
                                 class="list-group-item list-group-item-action border-0 mb-3"
                             >
-                                <div class="card h-100 list-card">
+
+                                <!-- Case A: 썸네일이 있는 경우 -->
+                                <div v-if="post.thumbnail_url"
+                                     class="card h-100 list-card-with-thumbnail"
+                                     @click="navigateToPost(post.id)">
                                     <div class="row g-0 align-items-center">
                                         <!-- 썸네일 (좌측) -->
-                                        <div class="col-md-3" v-if="post.thumbnail_url">
+                                        <div class="col-md-3">
                                             <img
                                                 :src="post.thumbnail_url"
                                                 :alt="post.title"
@@ -270,44 +335,77 @@ onMounted(async () => {
                                             />
                                         </div>
                                         <!-- 콘텐츠 (우측) -->
-                                        <div :class="post.thumbnail_url ? 'col-md-9' : 'col-12'">
+                                        <div class="col-md-9">
                                             <div class="card-body">
+                                                <!-- 블로그 제목 (fw-bold) -->
                                                 <h5 class="card-title">{{ post.title }}</h5>
-                                                <p class="card-text text-muted" v-if="post.description">
-                                                    {{ truncateDescription(post.description, 120) }}
-                                                </p>
-                                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                                    <div class="post-meta">
-                                                        <small class="text-muted me-3">
-                                                            <i class="fas fa-calendar-alt me-1"></i>
-                                                            {{ formatDate(post.published_at || post.last_edited_time) }}
-                                                        </small>
-                                                        <small class="text-muted">
-                                                            <i class="fas fa-eye me-1"></i>
-                                                            {{ formatViews(post.hits) }}
-                                                        </small>
-                                                    </div>
-                                                    <div class="post-categories">
-                                                        <span
-                                                            v-for="category in post.category"
-                                                            :key="category.id"
-                                                            class="badge bg-secondary me-1"
-                                                        >
-                                                            {{ category.name }}
-                                                        </span>
-                                                    </div>
+                                                <!-- 등록일자 및 조회수 -->
+                                                <div class="post-meta">
+                                                    <small class="text-muted">
+                                                        <i class="far fa-calendar-alt me-1"></i>
+                                                        {{ formatDate(post.published_at || post.last_edited_time) }}
+                                                    </small>
+                                                    <small class="text-muted">
+                                                        <i class="far fa-eye me-1"></i>
+                                                        {{ formatViews(post.hits) }}
+                                                    </small>
+                                                </div>
+                                                <!-- 카테고리 -->
+                                                <div class="post-categories">
+                                                    <span
+                                                        v-for="category in post.category"
+                                                        :key="category.id"
+                                                        class="badge bg-secondary"
+                                                    >
+                                                        {{ category.name }}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Case B: 썸네일이 없는 경우 -->
+                                <div v-else
+                                     class="card h-100 list-card-no-thumbnail"
+                                     @click="navigateToPost(post.id)">
+                                    <!-- 블로그 제목 (fw-bold) -->
+                                    <h5 class="card-title">{{ post.title }}</h5>
+                                    <!-- 블로그 미리보기 글 전체 -->
+                                    <p class="card-description"
+                                       v-if="post.description && post.description !== '미리보기 없음'">
+                                        {{ truncateDescription(post.description, 120) }}
+                                    </p>
+                                    <!-- 등록일자 및 조회수 -->
+                                    <div class="post-meta">
+                                        <small class="text-muted">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            {{ formatDate(post.published_at || post.last_edited_time) }}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="far fa-eye me-1"></i>
+                                            {{ formatViews(post.hits) }}
+                                        </small>
+                                    </div>
+                                    <!-- 카테고리 -->
+                                    <div class="post-categories">
+                                        <span
+                                            v-for="category in post.category"
+                                            :key="category.id"
+                                            class="badge bg-secondary"
+                                        >
+                                            {{ category.name }}
+                                        </span>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
                         <!-- 더보기 (Load More) 버튼 -->
                         <div class="text-center mt-4" v-if="showLoadMore">
                             <button
-                                class="btn btn-outline-secondary"
+                                class="btn btn-outline-secondary btn-load-more"
                                 @click="loadMore"
                             >
                                 <i class="fas fa-plus me-2"></i>
@@ -317,10 +415,10 @@ onMounted(async () => {
                     </section>
 
                     <!-- 글이 없는 경우 -->
-                    <div v-if="filteredAndSortedPosts.length === 0" class="text-center py-5">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                        <h4 class="text-muted">검색 결과가 없습니다</h4>
-                        <p class="text-muted">다른 카테고리를 선택해보세요.</p>
+                    <div v-if="filteredAndSortedPosts.length === 0" class="no-results">
+                        <i class="fas fa-search no-results-icon"></i>
+                        <h4>검색 결과가 없습니다</h4>
+                        <p>다른 카테고리를 선택해보세요.</p>
                     </div>
 
                 </div>
@@ -329,359 +427,6 @@ onMounted(async () => {
     </div>
 </template>
 
-<style lang="scss" scoped>
-.home-container {
-    background: #ffffff;
-    min-height: 100vh;
-    padding-top: 80px; // Header 높이만큼 여백
-}
-
-.top-spacing {
-    height: 150px;
-    display: flex;
-    align-items: flex-end;
-    margin-bottom: 40px;
-}
-
-// 1. 상단 필터 및 정렬 바 스타일
-.filter-sort-section {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid #e9ecef;
-
-    .category-nav {
-        .nav-pills {
-            .nav-item {
-                margin-right: 8px;
-
-                .nav-link {
-                    background: transparent;
-                    border: 1.5px solid #333333;
-                    color: #333333;
-                    padding: 8px 16px;
-                    border-radius: 20px;
-                    font-size: 14px;
-                    font-weight: 500;
-                    transition: all 0.2s ease;
-                    cursor: pointer;
-
-                    &:hover {
-                        background: #f8f9fa;
-                        border-color: #495057;
-                    }
-
-                    &.active {
-                        background: #333333;
-                        color: #ffffff;
-                        border-color: #333333;
-                    }
-                }
-            }
-        }
-    }
-
-    .sort-dropdown {
-        .dropdown-toggle {
-            font-size: 14px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-
-            &:focus {
-                box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
-            }
-        }
-
-        .dropdown-menu {
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            min-width: 180px;
-
-            .dropdown-item {
-                padding: 10px 16px;
-                font-size: 14px;
-                transition: all 0.15s ease;
-
-                &:hover {
-                    background-color: #f8f9fa;
-                }
-
-                &.active {
-                    background-color: #e9ecef;
-                    font-weight: 500;
-                }
-
-                i {
-                    width: 16px;
-                    text-align: center;
-                }
-            }
-        }
-    }
-}
-
-// 2. 중앙 Top 3 하이라이트 카드 스타일
-.highlight-section {
-    .section-title {
-        font-size: 1.75rem;
-        font-weight: 600;
-        color: #212529;
-        display: flex;
-        align-items: center;
-
-        i {
-            color: #ffc107;
-        }
-    }
-
-    .highlight-card {
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-
-        &:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-img-top-wrapper {
-            position: relative;
-            height: 200px;
-            overflow: hidden;
-
-            .card-img-top {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 0.3s ease;
-            }
-
-            &:hover .card-img-top {
-                transform: scale(1.05);
-            }
-        }
-
-        .card-preview-text {
-            height: 200px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            display: flex;
-            align-items: center;
-            padding: 20px;
-
-            p {
-                color: #6c757d;
-                font-size: 14px;
-                line-height: 1.5;
-                text-align: center;
-                margin: 0;
-            }
-        }
-
-        .card-body {
-            padding: 20px;
-
-            .card-title {
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: #212529;
-                margin-bottom: 12px;
-                line-height: 1.4;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-
-            .card-meta {
-                margin-bottom: 12px;
-
-                small {
-                    font-size: 13px;
-
-                    i {
-                        color: #6c757d;
-                    }
-                }
-            }
-
-            .card-categories {
-                .badge {
-                    font-size: 11px;
-                    padding: 4px 8px;
-                    border-radius: 8px;
-                }
-            }
-        }
-    }
-}
-
-// 3. 하단 리스트 뷰 스타일
-.list-section {
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #212529;
-        display: flex;
-        align-items: center;
-
-        i {
-            color: #6c757d;
-        }
-    }
-
-    .list-card {
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-
-        &:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-            border-color: #dee2e6;
-        }
-
-        .list-thumbnail {
-            height: 120px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .card-body {
-            padding: 20px;
-
-            .card-title {
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: #212529;
-                margin-bottom: 8px;
-                line-height: 1.4;
-            }
-
-            .card-text {
-                font-size: 14px;
-                line-height: 1.5;
-                margin-bottom: 0;
-            }
-
-            .post-meta {
-                small {
-                    font-size: 13px;
-
-                    i {
-                        color: #6c757d;
-                    }
-                }
-            }
-
-            .post-categories {
-                .badge {
-                    font-size: 11px;
-                    padding: 4px 8px;
-                    border-radius: 8px;
-                }
-            }
-        }
-    }
-}
-
-// Footer 스타일
-.footer {
-    background: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-    padding: 40px 0;
-    margin-bottom: 200px; // Wave 컴포넌트를 위한 여백
-
-    .footer-content {
-        .footer-copyright,
-        .footer-design {
-            color: #6c757d;
-            font-size: 14px;
-            margin: 0;
-        }
-    }
-}
-
-// 반응형 조정
-@media (max-width: 767.98px) {
-    .home-container {
-        padding-top: 70px;
-    }
-
-    .top-spacing {
-        height: 100px;
-        margin-bottom: 30px;
-    }
-
-    .filter-sort-section {
-        flex-direction: column;
-        align-items: stretch !important;
-
-        .category-nav {
-            margin-bottom: 16px;
-
-            .nav-pills {
-                justify-content: center !important;
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-        }
-
-        .sort-dropdown {
-            align-self: center;
-        }
-    }
-
-    .highlight-section {
-        .section-title {
-            font-size: 1.5rem;
-            text-align: center;
-            justify-content: center;
-            margin-bottom: 24px;
-        }
-    }
-
-    .list-section {
-        .section-title {
-            font-size: 1.25rem;
-            text-align: center;
-            justify-content: center;
-            margin-bottom: 24px;
-        }
-
-        .list-card {
-            .row {
-                .col-md-3,
-                .col-md-9 {
-                    // 모바일에서는 세로 레이아웃
-                }
-            }
-        }
-    }
-
-    .footer {
-        margin-bottom: 150px;
-    }
-}
-
-// 더보기 버튼 스타일
-.btn-outline-secondary {
-    padding: 12px 24px;
-    font-weight: 500;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-
-    &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    i {
-        font-size: 14px;
-    }
-}
+<style lang="scss">
+@import '@/assets/style/home.scss';
 </style>

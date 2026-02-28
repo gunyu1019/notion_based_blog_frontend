@@ -74,7 +74,7 @@ const configuration = new Configuration({
 export const blogApi = new DefaultApi(configuration, undefined, axiosInstance)
 
 /**
- * 확장된 API 클라이언트 - 모든 리소스 지원
+ * 확장된 API 클라이언트 - 실제 구현된 리소스만 지원
  */
 export class ExtendedApiClient {
     private axios: AxiosInstance
@@ -83,59 +83,21 @@ export class ExtendedApiClient {
         this.axios = axiosInstance
     }
 
-    // 게시글 관련 API
-    async getPosts(params?: { category?: string; tag?: string; limit?: number; offset?: number }) {
+    // 게시글 목록 API - private_access 파라미터 지원
+    async getPosts(params?: { private_access?: boolean }) {
         const url = apiHelpers.getPosts(params)
         return this.axios.get(url)
     }
 
-    async getPost(id: string | number) {
-        const url = apiHelpers.getPost(id)
+    // 단일 게시글 API - post_id 파라미터 필요
+    async getPost(postId: string) {
+        const url = apiHelpers.getPost(postId)
         return this.axios.get(url)
     }
 
-    async createPost(data: any) {
-        return this.axios.post(buildApiURL(API_ENDPOINTS.POST), data)
-    }
-
-    async updatePost(id: string | number, data: any) {
-        return this.axios.put(buildApiURL(API_ENDPOINTS.POST_DETAIL(id)), data)
-    }
-
-    async deletePost(id: string | number) {
-        return this.axios.delete(buildApiURL(API_ENDPOINTS.POST_DETAIL(id)))
-    }
-
-    // 콘텐츠 관련 API
-    async getContent(params?: { type?: string; limit?: number; offset?: number }) {
-        const url = apiHelpers.getContent(params)
-        return this.axios.get(url)
-    }
-
-    async getContentDetail(id: string | number) {
-        const url = apiHelpers.getContentDetail(id)
-        return this.axios.get(url)
-    }
-
-    // 카테고리 관련 API
-    async getCategories() {
-        const url = apiHelpers.getCategories()
-        return this.axios.get(url)
-    }
-
-    async getCategory(id: string | number) {
-        const url = apiHelpers.getCategory(id)
-        return this.axios.get(url)
-    }
-
-    // 검색 관련 API
-    async searchPosts(query: string, params?: { limit?: number; offset?: number }) {
-        const url = apiHelpers.searchPosts(query, params)
-        return this.axios.get(url)
-    }
-
-    async searchContent(query: string, params?: { limit?: number; offset?: number }) {
-        const url = apiHelpers.searchContent(query, params)
+    // 콘텐츠 API - item_id 파라미터 필요
+    async getContent(itemId: string) {
+        const url = apiHelpers.getContent(itemId)
         return this.axios.get(url)
     }
 

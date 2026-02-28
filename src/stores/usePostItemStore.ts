@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { blogApi, type PostItem } from '@/api'
+import { extendedApi, type PostItem } from '@/api'
 
 export const usePostItemStore = defineStore('postItem', () => {
     const content: Ref<PostItem[]> = ref([])
@@ -13,7 +13,7 @@ export const usePostItemStore = defineStore('postItem', () => {
         error.value = null
 
         try {
-            const response = await blogApi.listOfPostsPostsGet(privateAccess)
+            const response = await extendedApi.getPosts({ private_access: privateAccess })
             content.value = response.data
         } catch (err) {
             error.value =
