@@ -10,11 +10,12 @@ defineProps<{
 
 <style scoped lang="scss">
 .wave {
-    background: url('@/assets/wave.svg');
-    fill: #373b3e;
+    background: url('@/assets/image/wave.svg');
+    fill: #ffffff;
     width: 100%;
     height: 198px;
     overflow: hidden;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
 
     &.wave-type-1 {
         animation: wave-animation1 30s linear infinite;

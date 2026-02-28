@@ -2,9 +2,19 @@ import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import { DefaultApi, Configuration } from './generated'
 
+// 개발/배포 환경에 따른 Base URL 설정
+const getBaseURL = (): string => {
+    // 개발 환경에서는 Vite proxy를 통해 /api 경로로 요청
+    if (import.meta.env.DEV) {
+        return '/api'
+    }
+    // 배포 환경에서는 환경변수 또는 기본값 사용
+    return import.meta.env.VITE_API_BASE_URL || 'https://your-production-api.com'
+}
+
 // Axios 인스턴스 생성 및 설정
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+    baseURL: getBaseURL(),
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json'
@@ -40,7 +50,7 @@ axiosInstance.interceptors.response.use(
 
 // API Configuration
 const configuration = new Configuration({
-    basePath: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+    basePath: getBaseURL()
 })
 
 // Blog API 인스턴스 생성

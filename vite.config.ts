@@ -31,12 +31,31 @@ export default defineConfig({
         }
     },
     server: {
+        // 개발 서버 포트 설정
+        port: 5173,
+        host: true, // 네트워크에서 접근 가능하도록 설정
+        // CORS 해결을 위한 프록시 설정
         proxy: {
             '/api': {
-                target: 'http://localhost:8000',
+                target: process.env.VITE_API_TARGET || 'http://localhost:8000',
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '')
+                secure: false,
+                // API 경로를 백엔드에 맞게 변경 (/api 제거)
+                rewrite: (path) => path.replace(/^\/api/, ''),
+                configure: (proxy) => {
+                    proxy.on('error', (err) => {
+                        console.log('프록시 오류:', err);
+                    });
+                    proxy.on('proxyReq', (proxyReq, req) => {
+                        console.log('프록시 요청 전송:', req.method, req.url);
+                    });
+                    proxy.on('proxyRes', (proxyRes, req) => {
+                        console.log('프록시 응답 수신:', proxyRes.statusCode, req.url);
+                    });
+                }
             }
-        }
+        },
+        // CORS 설정 (추가적인 보안)
+        cors: true
     }
 })
