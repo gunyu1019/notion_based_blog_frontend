@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import Wave from '@/components/WaveItem.vue'
 import HeaderNavbar from '@/components/HeaderNavbar.vue'
-import { BDropdown, BDropdownItem } from 'bootstrap-vue-next'
 
 // 라우터 초기화
 const router = useRouter()
@@ -152,15 +151,6 @@ onMounted(async () => {
     <!-- Header -->
     <HeaderNavbar />
 
-    <!-- Font Awesome 테스트 (디버깅용) -->
-    <div style="position: fixed; top: 10px; right: 10px; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px;">
-        <div>FA 테스트:
-            <font-awesome-icon :icon="['fas', 'heart']" style="color: red;" />
-            <font-awesome-icon :icon="['fas', 'star']" style="color: gold;" />
-            <font-awesome-icon :icon="['fas', 'eye']" style="color: blue;" />
-        </div>
-    </div>
-
     <!-- Main Content -->
     <div class="home-container">
         <!-- Top Spacing with Wave -->
@@ -200,31 +190,40 @@ onMounted(async () => {
 
                         <!-- 우측 (정렬 드롭다운) -->
                         <div class="sort-dropdown">
-                            <BDropdown
-                                variant="outline-secondary"
-                                class="dropdown-toggle"
-                            >
-                                <template #button-content>
+                            <div class="dropdown">
+                                <button
+                                    class="btn btn-outline-secondary dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style="--bs-btn-border-color: transparent;"
+                                >
                                     <font-awesome-icon :icon="['fas', 'sort']" class="me-2" />
                                     {{ sortOption === 'latest' ? '최신순' : '조회순' }}
-                                </template>
-
-                                <BDropdownItem
-                                    :active="sortOption === 'latest'"
-                                    @click="changeSortOption('latest')"
-                                >
-                                    <font-awesome-icon :icon="['fas', 'clock']" class="me-2" />
-                                    최신순 (등록일)
-                                </BDropdownItem>
-
-                                <BDropdownItem
-                                    :active="sortOption === 'popular'"
-                                    @click="changeSortOption('popular')"
-                                >
-                                    <font-awesome-icon :icon="['fas', 'eye']" class="me-2" />
-                                    조회순 (인기)
-                                </BDropdownItem>
-                            </BDropdown>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button
+                                            class="dropdown-item"
+                                            :class="{ active: sortOption === 'latest' }"
+                                            @click="changeSortOption('latest')"
+                                        >
+                                            <font-awesome-icon :icon="['fas', 'clock']" class="me-2" />
+                                            최신순 (등록일)
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            class="dropdown-item"
+                                            :class="{ active: sortOption === 'popular' }"
+                                            @click="changeSortOption('popular')"
+                                        >
+                                            <font-awesome-icon :icon="['fas', 'eye']" class="me-2" />
+                                            조회순 (인기)
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
