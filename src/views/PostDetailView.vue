@@ -10,24 +10,39 @@
             <div class="container py-5">
                 <!-- 로딩 상태 -->
                 <div v-if="loading" class="status-center">
-                    <i class="fas fa-circle-notch fa-spin fa-2x mb-3 text-primary"></i>
+                    <font-awesome-icon
+                        icon="circle-notch"
+                        spin
+                        size="2x"
+                        class="mb-3 text-primary"
+                    />
                     <p class="text-muted">게시글을 불러오는 중입니다...</p>
                 </div>
 
                 <!-- 에러 상태 -->
                 <div v-else-if="error" class="status-center">
-                    <i v-if="isAccessDenied()" class="fas fa-lock fa-3x mb-3 text-secondary"></i>
-                    <i v-else class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>
+                    <font-awesome-icon
+                        v-if="isAccessDenied()"
+                        icon="lock"
+                        size="3x"
+                        class="mb-3 text-secondary"
+                    />
+                    <font-awesome-icon
+                        v-else
+                        icon="exclamation-triangle"
+                        size="3x"
+                        class="mb-3 text-danger"
+                    />
                     <h3 v-if="isAccessDenied()" class="text-dark fw-bold mb-3">접근이 제한된 게시글입니다.</h3>
                     <h3 v-else class="text-danger mb-3">게시글을 불러오는 중 오류가 발생했습니다.</h3>
                     <p class="text-muted mb-4">{{ error }}</p>
                     <div class="d-flex gap-2">
                         <button @click="retry" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-redo me-1"></i>
+                            <font-awesome-icon icon="redo" class="me-1" />
                             다시 시도
                         </button>
                         <router-link to="/" class="btn btn-outline-secondary btn-sm">
-                            <i class="fas fa-home me-1"></i>
+                            <font-awesome-icon icon="home" class="me-1" />
                             홈으로
                         </router-link>
                     </div>
@@ -54,7 +69,7 @@
                         <!-- 메타 정보 (조회수만) -->
                         <div class="post-meta">
                             <div class="meta-item">
-                                <i class="fas fa-eye"></i>
+                                <font-awesome-icon icon="eye" />
                                 <span>{{ postDetail.hits || 0 }}회 조회</span>
                             </div>
                         </div>
@@ -80,7 +95,7 @@
                             />
                         </div>
                         <div v-else class="empty-content">
-                            <i class="fas fa-file-alt fa-3x"></i>
+                            <font-awesome-icon icon="file-alt" size="3x" />
                             <p>내용이 없습니다.</p>
                         </div>
                     </div>
@@ -88,11 +103,11 @@
 
                 <!-- 게시글이 없는 경우 -->
                 <div v-else class="status-center">
-                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <font-awesome-icon icon="search" size="3x" class="text-muted mb-3" />
                     <h3 class="text-muted mb-3">게시글을 찾을 수 없습니다</h3>
                     <p class="text-muted mb-4">요청하신 게시글이 존재하지 않거나 삭제되었습니다.</p>
                     <router-link to="/" class="btn btn-primary">
-                        <i class="fas fa-home me-2"></i>
+                        <font-awesome-icon icon="home" class="me-2" />
                         홈으로 돌아가기
                     </router-link>
                 </div>

@@ -7,8 +7,12 @@ import BootstrapVueNext from 'bootstrap-vue-next'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(fas)
+
+// 모든 아이콘 라이브러리 추가 (Vue 컴포넌트 전용)
+library.add(fas, fab, far)
 
 import App from './App.vue'
 import router from './router'
