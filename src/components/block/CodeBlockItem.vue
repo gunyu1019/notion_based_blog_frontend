@@ -94,7 +94,9 @@ const rawCode = computed((): string => {
         return ''
     }
 
-    return props.codeBlock.text.map((richText) => richText.text || '').join('')
+    const codeText = props.codeBlock.text.map((richText) => richText.text || '').join('')
+    // 탭을 공백 4칸으로 변환
+    return codeText.replace(/\t/g, '    ')
 })
 
 /**
@@ -396,6 +398,8 @@ onMounted(() => {
         line-height: 1.6;
         overflow-x: auto;
         color: #24292e;
+        tab-size: 4; /* 탭 크기를 4칸으로 설정 */
+        -moz-tab-size: 4; /* Firefox 호환성 */
 
         // 줄 번호가 있을 때 패딩 제거
         &:has(.hljs-ln) {
@@ -411,6 +415,8 @@ onMounted(() => {
             white-space: pre;
             word-wrap: normal;
             overflow-wrap: normal;
+            tab-size: inherit; /* 부모의 탭 크기 상속 */
+            -moz-tab-size: inherit; /* Firefox 호환성 */
         }
     }
 }

@@ -56,6 +56,8 @@
         background: transparent !important;
         color: #24292e !important;
         border: none !important;
+        tab-size: 4 !important; /* 탭 크기를 4칸으로 설정 */
+        -moz-tab-size: 4 !important; /* Firefox 호환성 */
     }
 }
 

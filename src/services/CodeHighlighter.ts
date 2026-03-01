@@ -97,32 +97,44 @@ export class CodeHighlighter {
                 return this.escapeHtml('')
             }
 
+            // 탭을 공백 4칸으로 변환
+            const processedCode = this.convertTabsToSpaces(code)
+
             // 언어 정규화 (소문자, 별칭 처리)
             const normalizedLanguage = this.normalizeLanguage(language)
 
             // 지원하는 언어인지 확인
             if (this.isLanguageSupported(normalizedLanguage)) {
-                const result = hljs.highlight(code, {
+                const result = hljs.highlight(processedCode, {
                     language: normalizedLanguage,
                     ignoreIllegals: true
                 })
                 return result.value
             } else {
                 // 지원하지 않는 언어의 경우 자동 감지 시도
-                const autoDetectResult = hljs.highlightAuto(code)
+                const autoDetectResult = hljs.highlightAuto(processedCode)
 
                 // 자동 감지 신뢰도가 높으면 사용, 아니면 일반 텍스트로 처리
                 if (autoDetectResult.relevance && autoDetectResult.relevance > 5) {
                     return autoDetectResult.value
                 } else {
-                    return this.escapeHtml(code)
+                    return this.escapeHtml(processedCode)
                 }
             }
         } catch (error) {
             console.warn(`Code highlighting failed for language "${language}":`, error)
-            // 에러 발생 시 이스케이프된 원본 코드 반환
-            return this.escapeHtml(code)
+            // 에러 발생 시 이스케이프된 원본 코드 반환 (탭 변환 적용)
+            return this.escapeHtml(this.convertTabsToSpaces(code))
         }
+    }
+
+    /**
+     * 탭 문자를 공백 4칸으로 변환
+     * @param code 변환할 코드 문자열
+     * @returns 탭이 공백으로 변환된 코드 문자열
+     */
+    private convertTabsToSpaces(code: string): string {
+        return code.replace(/\t/g, '    ')
     }
 
     /**
