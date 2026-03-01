@@ -1,4 +1,13 @@
 import hljs from 'highlight.js'
+import 'highlightjs-line-numbers.js'
+
+// hljs 객체에 lineNumbersBlock 메서드가 있음을 타입스크립트에 알림
+declare module 'highlight.js' {
+    interface HLJSStatic {
+        lineNumbersBlock(element: HTMLElement, options?: any): void
+        initLineNumbersOnLoad(options?: any): void
+    }
+}
 
 /**
  * 코드 구문 강조를 담당하는 서비스 클래스
@@ -113,6 +122,44 @@ export class CodeHighlighter {
             console.warn(`Code highlighting failed for language "${language}":`, error)
             // 에러 발생 시 이스케이프된 원본 코드 반환
             return this.escapeHtml(code)
+        }
+    }
+
+    /**
+     * DOM 요소에 줄 번호를 적용
+     * @param element 코드가 포함된 DOM 요소
+     * @param options 줄 번호 옵션
+     */
+    public addLineNumbers(element: HTMLElement, options?: {
+        singleLine?: boolean
+        startFrom?: number
+    }): void {
+        try {
+            // highlightjs-line-numbers.js 플러그인 적용
+            (hljs as any).lineNumbersBlock(element, {
+                singleLine: options?.singleLine ?? false,
+                startFrom: options?.startFrom ?? 1
+            })
+        } catch (error) {
+            console.warn('Failed to add line numbers:', error)
+        }
+    }
+
+    /**
+     * 페이지의 모든 코드 블록에 줄 번호 적용
+     * @param options 줄 번호 옵션
+     */
+    public initLineNumbersOnLoad(options?: {
+        singleLine?: boolean
+        startFrom?: number
+    }): void {
+        try {
+            (hljs as any).initLineNumbersOnLoad({
+                singleLine: options?.singleLine ?? false,
+                startFrom: options?.startFrom ?? 1
+            })
+        } catch (error) {
+            console.warn('Failed to initialize line numbers:', error)
         }
     }
 

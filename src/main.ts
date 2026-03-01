@@ -3,6 +3,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 
 import '@/assets/style/main.scss'
 import '@/assets/style/github-light-theme.scss' // GitHub Light 테마
+import '@/assets/style/block.scss' // 코드 블록 스타일
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

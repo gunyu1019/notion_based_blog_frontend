@@ -2,20 +2,20 @@
     <div class="code-block-container">
         <!-- 헤더 영역 -->
         <div class="code-block-header">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center justify-content-between flex-nowrap">
                 <!-- 언어 뱃지 -->
-                <div class="language-info">
-                    <span class="badge bg-primary me-2">
+                <div class="language-info d-flex align-items-center gap-2 min-w-0 flex-grow-1">
+                    <span class="badge bg-primary flex-shrink-0">
                         <i class="fas fa-code me-1"></i>
                         {{ displayLanguage }}
                     </span>
-                    <span v-if="lineCount > 0" class="text-muted small">
+                    <span v-if="lineCount > 0" class="text-muted small text-truncate">
                         {{ lineCount }} lines
                     </span>
                 </div>
 
                 <!-- 복사 버튼 -->
-                <div class="code-actions">
+                <div class="code-actions flex-shrink-0 ms-2">
                     <button
                         @click="copyToClipboard"
                         :disabled="copyState.isLoading"
@@ -25,7 +25,8 @@
                         title="코드 복사"
                     >
                         <i :class="getCopyIconClass()" class="me-1"></i>
-                        {{ getCopyButtonText() }}
+                        <span class="d-none d-sm-inline">{{ getCopyButtonText() }}</span>
+                        <span class="d-sm-none">{{ getCopyButtonText().slice(0, 2) }}</span>
                     </button>
                 </div>
             </div>
@@ -33,10 +34,13 @@
 
         <!-- 코드 본문 -->
         <div class="code-block-content">
-            <pre class="hljs-code" :class="{ 'line-numbers': showLineNumbers }"><code
-        v-html="highlightedCode"
-        class="hljs"
-      ></code></pre>
+            <pre class="hljs-code" :class="{ 'line-numbers': showLineNumbers }">
+                <code
+                    ref="codeElementRef"
+                    v-html="highlightedCode"
+                    class="hljs"
+                ></code>
+            </pre>
         </div>
 
         <!-- 캡션 -->
@@ -47,10 +51,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import type { CodeBlock } from '@/api/generated/api'
-import { CodeHighlighter } from '@/services/CodeHighlighter'
-import RichTextRenderer from '@/components/RichTextRenderer.vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import type { CodeBlock } from '../../api/generated/api'
+import { CodeHighlighter } from '../../services/CodeHighlighter'
+import RichTextRenderer from '../RichTextRenderer.vue'
+import hljs from 'highlight.js'
+import 'highlightjs-line-numbers.js'
 
 interface Props {
     codeBlock: CodeBlock
@@ -66,6 +72,9 @@ interface CopyState {
 const props = withDefaults(defineProps<Props>(), {
     showLineNumbers: true
 })
+
+// 코드 요소 DOM 참조
+const codeElementRef = ref<HTMLElement | null>(null)
 
 // 복사 상태 관리
 const copyState = ref<CopyState>({
@@ -127,7 +136,24 @@ const copyToClipboard = async (): Promise<void> => {
 
         // 클립보드 API 지원 여부 확인
         if (!navigator.clipboard) {
-            throw new Error('클립보드 API가 지원되지 않습니다.')
+            // 클립보드 API가 지원되지 않는 경우 바로 폴백 방법 사용
+            copyState.value.error = '클립보드 API가 지원되지 않습니다.'
+
+            // 폴백: 구식 방법으로 텍스트 선택
+            const textArea = document.createElement('textarea')
+            textArea.value = rawCode.value
+            textArea.style.position = 'fixed'
+            textArea.style.opacity = '0'
+            document.body.appendChild(textArea)
+            textArea.select()
+            document.execCommand('copy')
+            document.body.removeChild(textArea)
+
+            copyState.value.isSuccess = true
+            setTimeout(() => {
+                copyState.value.isSuccess = false
+            }, 2000)
+            return
         }
 
         // 코드 복사 실행
@@ -193,6 +219,84 @@ const getCopyButtonText = (): string => {
     }
 }
 
+/**
+ * 줄 번호 적용
+ */
+const applyLineNumbers = async (): Promise<void> => {
+    if (!props.showLineNumbers || !codeElementRef.value) {
+        console.log('Line numbers not applied: showLineNumbers =', props.showLineNumbers, ', codeElementRef =', codeElementRef.value)
+        return
+    }
+
+    // Vue DOM 업데이트가 완료될 때까지 대기
+    await nextTick()
+
+    // DOM 렌더링이 완전히 끝날 때까지 추가 지연
+    setTimeout(() => {
+        if (!codeElementRef.value) return
+
+        try {
+            // highlightjs-line-numbers.js 플러그인이 로드되었는지 확인
+            if (!(hljs as any).lineNumbersBlock) {
+                console.error('highlightjs-line-numbers.js plugin not loaded')
+                return
+            }
+
+            // 기존 줄 번호 테이블이 있으면 제거
+            const parentElement = codeElementRef.value.parentElement;
+            if (parentElement) {
+                const existingTable = parentElement.querySelector('.hljs-ln');
+                if (existingTable) {
+                    console.log('Removing existing line numbers table');
+                    existingTable.remove();
+                }
+            }
+
+            console.log('Applying line numbers to code element:', codeElementRef.value);
+            // Line count 로깅 제거 - 타입스크립트 오류 해결을 위해
+
+            // code 요소에 줄 번호 적용
+            (hljs as any).lineNumbersBlock(codeElementRef.value, {
+                singleLine: lineCount.value === 1,
+                startFrom: 1
+            });
+
+            console.log('Line numbers applied successfully');
+
+            // 적용 후 확인
+            const appliedTable = codeElementRef.value.parentElement?.querySelector('.hljs-ln');
+            console.log('Line number table found after application:', !!appliedTable);
+
+        } catch (error) {
+            console.error('Failed to apply line numbers:', error);
+        }
+    }, 150); // 150ms 지연으로 안정성 확보
+};
+
+// highlightedCode가 변경될 때마다 줄 번호 재적용
+watch(highlightedCode, () => {
+    if (props.showLineNumbers) {
+        applyLineNumbers()
+    }
+}, { flush: 'post' })
+
+// showLineNumbers가 변경될 때 줄 번호 적용/제거
+watch(() => props.showLineNumbers, (newValue) => {
+    if (newValue) {
+        applyLineNumbers()
+    } else {
+        // 줄 번호 제거
+        nextTick(() => {
+            if (codeElementRef.value && codeElementRef.value.parentElement) {
+                const existingTable = codeElementRef.value.parentElement.querySelector('.hljs-ln')
+                if (existingTable) {
+                    existingTable.remove()
+                }
+            }
+        })
+    }
+})
+
 // 컴포넌트 마운트 시 실행
 onMounted(() => {
     // highlight.js 스타일이 제대로 로드되었는지 확인
@@ -201,6 +305,11 @@ onMounted(() => {
         codeLength: rawCode.value.length,
         lineCount: lineCount.value
     })
+
+    // 줄 번호 적용
+    if (props.showLineNumbers) {
+        applyLineNumbers()
+    }
 })
 </script>
 
@@ -288,6 +397,11 @@ onMounted(() => {
         overflow-x: auto;
         color: #24292e;
 
+        // 줄 번호가 있을 때 패딩 제거
+        &:has(.hljs-ln) {
+            padding: 0;
+        }
+
         code {
             background: transparent;
             border: none;
@@ -297,23 +411,6 @@ onMounted(() => {
             white-space: pre;
             word-wrap: normal;
             overflow-wrap: normal;
-        }
-    }
-
-    // 라인 넘버 스타일 (선택사항)
-    .line-numbers {
-        position: relative;
-        padding-left: 3.5rem;
-
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 3rem;
-            background: #f6f8fa;
-            border-right: 1px solid #e1e4e8;
         }
     }
 }
@@ -408,13 +505,33 @@ onMounted(() => {
     }
 
     .code-block-header {
-        padding: 0.5rem;
-        flex-direction: column;
-        gap: 0.5rem;
+        padding: 0.75rem;
 
+        // 헤더 레이아웃을 유지하면서 공간 최적화
         .d-flex {
-            flex-direction: column;
-            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .language-info {
+            gap: 0.25rem;
+            min-width: 0;
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .text-muted {
+                font-size: 0.75rem;
+            }
+        }
+
+        .code-actions {
+            .copy-button {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+                min-width: auto;
+            }
         }
     }
 

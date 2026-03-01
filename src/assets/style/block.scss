@@ -1,0 +1,121 @@
+// 코드 블록 줄 번호 스타일링 (highlightjs-line-numbers.js 플러그인용)
+
+// 줄 번호가 포함된 테이블 구조 스타일링
+.hljs-ln {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1.5rem !important;
+    font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    background: transparent !important;
+
+    // 테이블 행
+    tr {
+        border: none !important;
+
+        &:hover {
+            background-color: rgba(255, 193, 7, 0.08) !important;
+        }
+    }
+
+    // 줄 번호 셀 (왼쪽)
+    .hljs-ln-numbers {
+        background: #f8f9fa !important;
+        color: #adb5bd !important;
+        border-right: 1px solid #e1e4e8 !important;
+        text-align: right !important;
+        padding: 0 0.75rem 0 1.5rem !important;
+        vertical-align: top !important;
+        user-select: none !important;
+        min-width: 3rem !important;
+        width: 3rem !important;
+        font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+        font-size: 0.85em !important;
+        line-height: 1.6 !important;
+        white-space: nowrap !important;
+        cursor: default !important;
+
+        // 드래그 방지
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+    }
+
+    // 코드 셀 (오른쪽)
+    .hljs-ln-code {
+        padding: 0 1.5rem 0 1rem !important;
+        vertical-align: top !important;
+        width: auto !important;
+        font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+        line-height: 1.6 !important;
+        white-space: pre !important;
+        word-wrap: normal !important;
+        overflow-wrap: normal !important;
+        background: transparent !important;
+        color: #24292e !important;
+        border: none !important;
+    }
+}
+
+// 줄 번호가 적용된 pre 요소의 패딩 제거
+.hljs-code:has(.hljs-ln) {
+    padding: 0 !important;
+}
+
+// 다크 테마 지원
+@media (prefers-color-scheme: dark) {
+    .hljs-ln {
+        .hljs-ln-numbers {
+            background: #2d3748 !important;
+            color: #718096 !important;
+            border-right-color: #4a5568 !important;
+        }
+
+        .hljs-ln-code {
+            color: #e2e8f0 !important;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 193, 7, 0.12) !important;
+        }
+    }
+}
+
+// 반응형 디자인 - 모바일에서 줄 번호 최적화
+@media (max-width: 768px) {
+    .hljs-ln {
+        padding: 1rem !important;
+
+        .hljs-ln-numbers {
+            min-width: 2.5rem !important;
+            width: 2.5rem !important;
+            padding: 0 0.5rem 0 1rem !important;
+            font-size: 0.75em !important;
+        }
+
+        .hljs-ln-code {
+            padding: 0 1rem 0 0.75rem !important;
+        }
+    }
+}
+
+// 프린트 스타일 - 줄 번호 유지하되 배경색 제거
+@media print {
+    .hljs-ln {
+        .hljs-ln-numbers {
+            background: transparent !important;
+            color: #666 !important;
+            border-right-color: #ccc !important;
+        }
+
+        .hljs-ln-code {
+            color: #000 !important;
+        }
+
+        tr:hover {
+            background-color: transparent !important;
+        }
+    }
+}
