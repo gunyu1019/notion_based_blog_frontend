@@ -25,8 +25,8 @@ const monthHits = ref<number>(3256)
 // 카테고리 추출 (Computed)
 const uniqueCategories = computed(() => {
     const categoryMap = new Map()
-    content.value.forEach(post => {
-        post.category?.forEach(cat => {
+    content.value.forEach((post) => {
+        post.category?.forEach((cat) => {
             if (!categoryMap.has(cat.id)) {
                 categoryMap.set(cat.id, cat)
             }
@@ -51,8 +51,16 @@ const filteredAndSortedPosts = computed(() => {
     if (sortOption.value === 'latest') {
         // 최신순: published_at 또는 last_edited_time 기준 내림차순
         filtered = [...filtered].sort((a, b) => {
-            const dateA = a.published_at ? new Date(a.published_at).getTime() : a.last_edited_time ? new Date(a.last_edited_time).getTime() : 0
-            const dateB = b.published_at ? new Date(b.published_at).getTime() : b.last_edited_time ? new Date(b.last_edited_time).getTime() : 0
+            const dateA = a.published_at
+                ? new Date(a.published_at).getTime()
+                : a.last_edited_time
+                  ? new Date(a.last_edited_time).getTime()
+                  : 0
+            const dateB = b.published_at
+                ? new Date(b.published_at).getTime()
+                : b.last_edited_time
+                  ? new Date(b.last_edited_time).getTime()
+                  : 0
             return dateB - dateA
         })
     } else if (sortOption.value === 'popular') {
@@ -67,8 +75,16 @@ const filteredAndSortedPosts = computed(() => {
             }
 
             // 2차 정렬: 조회수가 같으면 날짜로 정렬
-            const dateA = a.published_at ? new Date(a.published_at).getTime() : a.last_edited_time ? new Date(a.last_edited_time).getTime() : 0
-            const dateB = b.published_at ? new Date(b.published_at).getTime() : b.last_edited_time ? new Date(b.last_edited_time).getTime() : 0
+            const dateA = a.published_at
+                ? new Date(a.published_at).getTime()
+                : a.last_edited_time
+                  ? new Date(a.last_edited_time).getTime()
+                  : 0
+            const dateB = b.published_at
+                ? new Date(b.published_at).getTime()
+                : b.last_edited_time
+                  ? new Date(b.last_edited_time).getTime()
+                  : 0
             return dateB - dateA
         })
     }
@@ -113,7 +129,9 @@ function formatViews(views: number | bigint | undefined): string {
 // 설명 텍스트 자르기
 function truncateDescription(description: string | undefined, maxLength: number = 100): string {
     if (!description || description === '미리보기 없음') return ''
-    return description.length > maxLength ? description.substring(0, maxLength) + '...' : description
+    return description.length > maxLength
+        ? description.substring(0, maxLength) + '...'
+        : description
 }
 
 // 카테고리 선택 함수
@@ -153,7 +171,9 @@ onMounted(async () => {
     <!-- Main Content -->
     <div class="home-container">
         <!-- Hero Section -->
-        <section class="hero-section d-flex flex-column align-items-center justify-content-center text-center">
+        <section
+            class="hero-section d-flex flex-column align-items-center justify-content-center text-center mt-5 pt-5"
+        >
             <!-- 소개글 -->
             <div class="hero-intro">
                 <p class="hero-subtitle fs-5 text-muted fw-light mb-3">
@@ -165,17 +185,20 @@ onMounted(async () => {
             </div>
 
             <!-- SNS 링크 버튼 -->
-            <div class="hero-sns mb-5">
-                <a href="https://github.com" target="_blank" class="btn btn-outline-secondary rounded-circle sns-button me-3">
-                    <i class="fab fa-github"></i>
+            <div class="sns-links d-flex justify-content-center align-items-center gap-4 mt-3">
+                <a href="https://yhs.kr" class="sns-icon-link">
+                    <i class="fas fa-home fs-3"></i>
                 </a>
-                <a href="mailto:contact@example.com" class="btn btn-outline-secondary rounded-circle sns-button">
-                    <i class="fas fa-envelope"></i>
+                <a href="https://github.com/gunyu1019" target="_blank" class="sns-icon-link">
+                    <i class="fab fa-github fs-3"></i>
+                </a>
+                <a href="mailto:gunyu1019@yhs.kr" class="sns-icon-link">
+                    <i class="fas fa-envelope fs-3"></i>
                 </a>
             </div>
 
             <!-- 방문자 수 카운터 -->
-            <div class="hero-visitor-counter">
+            <div class="hero-visitor-counter mt-5">
                 <div class="d-flex gap-3 justify-content-center">
                     <div class="visitor-badge">
                         <span class="badge bg-light text-dark px-3 py-2">
@@ -193,15 +216,18 @@ onMounted(async () => {
             </div>
         </section>
 
-        <div class="container-fluid">
+        <div class="container-fluid mb-5 pb-5">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-10">
-
                     <!-- 1. 상단: 필터 및 정렬 바 (Top Section) -->
-                    <div class="filter-sort-section d-flex justify-content-between align-items-center flex-wrap gap-3 mb-5">
+                    <div
+                        class="filter-sort-section d-flex justify-content-between align-items-center flex-wrap gap-3 mb-5"
+                    >
                         <!-- 중앙 (카테고리 선택) -->
                         <nav class="category-nav flex-grow-1">
-                            <ul class="nav nav-pills justify-content-center justify-content-md-start">
+                            <ul
+                                class="nav nav-pills justify-content-center justify-content-md-start"
+                            >
                                 <li class="nav-item">
                                     <button
                                         class="nav-link"
@@ -211,7 +237,11 @@ onMounted(async () => {
                                         전체
                                     </button>
                                 </li>
-                                <li v-for="category in uniqueCategories" :key="category.id" class="nav-item">
+                                <li
+                                    v-for="category in uniqueCategories"
+                                    :key="category.id"
+                                    class="nav-item"
+                                >
                                     <button
                                         class="nav-link"
                                         :class="{ active: selectedCategory === category.id }"
@@ -231,7 +261,7 @@ onMounted(async () => {
                                     type="button"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
-                                    style="--bs-btn-border-color: transparent;"
+                                    style="--bs-btn-border-color: transparent"
                                 >
                                     <font-awesome-icon :icon="['fas', 'sort']" class="me-2" />
                                     {{ sortOption === 'latest' ? '최신순' : '조회순' }}
@@ -243,7 +273,10 @@ onMounted(async () => {
                                             :class="{ active: sortOption === 'latest' }"
                                             @click="changeSortOption('latest')"
                                         >
-                                            <font-awesome-icon :icon="['fas', 'clock']" class="me-2" />
+                                            <font-awesome-icon
+                                                :icon="['fas', 'clock']"
+                                                class="me-2"
+                                            />
                                             최신순 (등록일)
                                         </button>
                                     </li>
@@ -253,7 +286,10 @@ onMounted(async () => {
                                             :class="{ active: sortOption === 'popular' }"
                                             @click="changeSortOption('popular')"
                                         >
-                                            <font-awesome-icon :icon="['fas', 'eye']" class="me-2" />
+                                            <font-awesome-icon
+                                                :icon="['fas', 'eye']"
+                                                class="me-2"
+                                            />
                                             조회순 (인기)
                                         </button>
                                     </li>
@@ -270,11 +306,12 @@ onMounted(async () => {
                         </h2>
                         <div class="top-posts-slider">
                             <div v-for="post in topPosts" :key="post.id" class="card-wrapper">
-
                                 <!-- Case A: 썸네일이 있는 경우 -->
-                                <div v-if="post.thumbnail_url"
-                                     class="card h-100 highlight-card-with-thumbnail"
-                                     @click="navigateToPost(post.id)">
+                                <div
+                                    v-if="post.thumbnail_url"
+                                    class="card h-100 highlight-card-with-thumbnail"
+                                    @click="navigateToPost(post.id)"
+                                >
                                     <!-- 썸네일 이미지 -->
                                     <div class="card-img-top-wrapper">
                                         <img
@@ -289,11 +326,21 @@ onMounted(async () => {
                                         <!-- 등록일자 및 조회수 -->
                                         <div class="card-meta">
                                             <small class="text-muted">
-                                                <font-awesome-icon :icon="['fas', 'calendar-days']" class="me-1" />
-                                                {{ formatDate(post.published_at || post.last_edited_time) }}
+                                                <font-awesome-icon
+                                                    :icon="['fas', 'calendar-days']"
+                                                    class="me-1"
+                                                />
+                                                {{
+                                                    formatDate(
+                                                        post.published_at || post.last_edited_time
+                                                    )
+                                                }}
                                             </small>
                                             <small class="text-muted">
-                                                <font-awesome-icon :icon="['fas', 'eye']" class="me-1" />
+                                                <font-awesome-icon
+                                                    :icon="['fas', 'eye']"
+                                                    class="me-1"
+                                                />
                                                 {{ formatViews(post.hits) }}
                                             </small>
                                         </div>
@@ -311,23 +358,40 @@ onMounted(async () => {
                                 </div>
 
                                 <!-- Case B: 썸네일이 없는 경우 -->
-                                <div v-else
-                                     class="card h-100 highlight-card-no-thumbnail"
-                                     @click="navigateToPost(post.id)">
+                                <div
+                                    v-else
+                                    class="card h-100 highlight-card-no-thumbnail"
+                                    @click="navigateToPost(post.id)"
+                                >
                                     <!-- 블로그 제목 (fw-bold) -->
                                     <h5 class="card-title">{{ post.title }}</h5>
                                     <!-- 블로그 미리보기 글 전체 -->
-                                    <p class="card-description" v-if="post.description && post.description !== '미리보기 없음'">
+                                    <p
+                                        class="card-description"
+                                        v-if="
+                                            post.description && post.description !== '미리보기 없음'
+                                        "
+                                    >
                                         {{ post.description }}
                                     </p>
                                     <!-- 등록일자 및 조회수 -->
                                     <div class="card-meta">
                                         <small class="text-muted">
-                                            <font-awesome-icon :icon="['fas', 'calendar-days']" class="me-1" />
-                                            {{ formatDate(post.published_at || post.last_edited_time) }}
+                                            <font-awesome-icon
+                                                :icon="['fas', 'calendar-days']"
+                                                class="me-1"
+                                            />
+                                            {{
+                                                formatDate(
+                                                    post.published_at || post.last_edited_time
+                                                )
+                                            }}
                                         </small>
                                         <small class="text-muted">
-                                            <font-awesome-icon :icon="['fas', 'eye']" class="me-1" />
+                                            <font-awesome-icon
+                                                :icon="['fas', 'eye']"
+                                                class="me-1"
+                                            />
                                             {{ formatViews(post.hits) }}
                                         </small>
                                     </div>
@@ -342,7 +406,6 @@ onMounted(async () => {
                                         </span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </section>
@@ -361,11 +424,12 @@ onMounted(async () => {
                                 :key="post.id"
                                 class="list-group-item list-group-item-action border-0 mb-3"
                             >
-
                                 <!-- Case A: 썸네일이 있는 경우 -->
-                                <div v-if="post.thumbnail_url"
-                                     class="card h-100 list-card-with-thumbnail"
-                                     @click="navigateToPost(post.id)">
+                                <div
+                                    v-if="post.thumbnail_url"
+                                    class="card h-100 list-card-with-thumbnail"
+                                    @click="navigateToPost(post.id)"
+                                >
                                     <div class="row g-0 align-items-center">
                                         <!-- 썸네일 (좌측) -->
                                         <div class="col-md-3">
@@ -384,7 +448,12 @@ onMounted(async () => {
                                                 <div class="post-meta">
                                                     <small class="text-muted">
                                                         <i class="far fa-calendar-alt me-1"></i>
-                                                        {{ formatDate(post.published_at || post.last_edited_time) }}
+                                                        {{
+                                                            formatDate(
+                                                                post.published_at ||
+                                                                    post.last_edited_time
+                                                            )
+                                                        }}
                                                     </small>
                                                     <small class="text-muted">
                                                         <i class="far fa-eye me-1"></i>
@@ -407,24 +476,40 @@ onMounted(async () => {
                                 </div>
 
                                 <!-- Case B: 썸네일이 없는 경우 -->
-                                <div v-else
-                                     class="card h-100 list-card-no-thumbnail"
-                                     @click="navigateToPost(post.id)">
+                                <div
+                                    v-else
+                                    class="card h-100 list-card-no-thumbnail"
+                                    @click="navigateToPost(post.id)"
+                                >
                                     <!-- 블로그 제목 (fw-bold) -->
                                     <h5 class="card-title">{{ post.title }}</h5>
                                     <!-- 블로그 미리보기 글 전체 -->
-                                    <p class="card-description"
-                                       v-if="post.description && post.description !== '미리보기 없음'">
+                                    <p
+                                        class="card-description"
+                                        v-if="
+                                            post.description && post.description !== '미리보기 없음'
+                                        "
+                                    >
                                         {{ truncateDescription(post.description, 120) }}
                                     </p>
                                     <!-- 등록일자 및 조회수 -->
                                     <div class="post-meta">
                                         <small class="text-muted">
-                                            <font-awesome-icon :icon="['fas', 'calendar-days']" class="me-1" />
-                                            {{ formatDate(post.published_at || post.last_edited_time) }}
+                                            <font-awesome-icon
+                                                :icon="['fas', 'calendar-days']"
+                                                class="me-1"
+                                            />
+                                            {{
+                                                formatDate(
+                                                    post.published_at || post.last_edited_time
+                                                )
+                                            }}
                                         </small>
                                         <small class="text-muted">
-                                            <font-awesome-icon :icon="['fas', 'eye']" class="me-1" />
+                                            <font-awesome-icon
+                                                :icon="['fas', 'eye']"
+                                                class="me-1"
+                                            />
                                             {{ formatViews(post.hits) }}
                                         </small>
                                     </div>
@@ -439,7 +524,6 @@ onMounted(async () => {
                                         </span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 
@@ -461,7 +545,6 @@ onMounted(async () => {
                         <h4>검색 결과가 없습니다</h4>
                         <p>다른 카테고리를 선택해보세요.</p>
                     </div>
-
                 </div>
             </div>
         </div>

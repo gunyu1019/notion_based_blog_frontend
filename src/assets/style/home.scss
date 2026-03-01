@@ -26,39 +26,61 @@
         }
     }
 
-    .hero-sns {
-        margin-bottom: 3rem !important;
+    // yhs.kr 스타일 SNS 링크
+    .sns-links {
+        margin-top: 1rem;
+        margin-bottom: 3rem;
 
-        .sns-button {
-            width: 48px;
-            height: 48px;
-            border-color: #6c757d !important;
-            color: #6c757d !important;
+        .sns-icon-link {
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            border-width: 1.5px !important;
 
-            &:hover {
-                background-color: #6c757d;
-                color: #ffffff !important;
-                border-color: #6c757d !important;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(108, 117, 125, 0.2);
+            // 데스크톱에서만 호버 효과 적용 (터치 기기 예외 처리)
+            @media (hover: hover) and (pointer: fine) {
+                &:hover {
+                    color: #212529;
+                    transform: translateY(-4px);
+                    text-decoration: none;
+                }
             }
 
+            // 활성화 상태 (클릭 시)
             &:active {
-                transform: translateY(0);
+                transform: translateY(-2px);
+            }
+
+            &:hover .fa-home {
+                @media (hover: hover) and (pointer: fine) {
+                    color: #0d6efd;
+                }
+            }
+
+            // GitHub 브랜드 컬러 (선택사항)
+            &:hover .fa-github {
+                @media (hover: hover) and (pointer: fine) {
+                    color: #333;
+                }
+            }
+
+            // 이메일 브랜드 컬러 (선택사항)
+            &:hover .fa-envelope {
+                @media (hover: hover) and (pointer: fine) {
+                    color: #0d6efd;
+                }
             }
 
             i {
-                font-size: 18px;
+                font-size: 1.75rem; // fs-3에 해당
             }
         }
     }
 
     .hero-visitor-counter {
+        margin-top: 3rem;
         margin-bottom: 3rem;
 
         .visitor-badge {
@@ -101,19 +123,21 @@
             }
         }
 
-        .hero-sns {
-            .sns-button {
-                width: 42px;
-                height: 42px;
-                margin: 0 0.75rem !important;
+        .sns-links {
+            margin-top: 1rem;
+            margin-bottom: 2.5rem;
+            gap: 2rem !important;
 
+            .sns-icon-link {
                 i {
-                    font-size: 16px;
+                    font-size: 1.5rem; // 모바일에서 조금 더 작게
                 }
             }
         }
 
         .hero-visitor-counter {
+            margin-top: 2.5rem;
+
             .d-flex {
                 flex-direction: column;
                 gap: 0.75rem !important;
