@@ -228,13 +228,13 @@ onMounted(async () => {
                     </div>
 
                     <!-- 2. 중앙: Top 3 하이라이트 카드 (Middle Section) -->
-                    <section class="highlight-section mb-5" v-if="topPosts.length > 0">
+                    <section class="highlight-section mb-5 px-2" v-if="topPosts.length > 0">
                         <h2 class="section-title mb-4">
                             <font-awesome-icon :icon="['fas', 'star']" class="me-2" />
                             {{ sortOption === 'latest' ? '최신 글' : '인기 글' }}
                         </h2>
-                        <div class="row g-4">
-                            <div v-for="post in topPosts" :key="post.id" class="col-md-4">
+                        <div class="top-posts-slider">
+                            <div v-for="post in topPosts" :key="post.id" class="card-wrapper">
 
                                 <!-- Case A: 썸네일이 있는 경우 -->
                                 <div v-if="post.thumbnail_url"
@@ -313,7 +313,7 @@ onMounted(async () => {
                     </section>
 
                     <!-- 3. 하단: 리스트 뷰 및 Mock 페이지네이션 (Bottom Section) -->
-                    <section class="list-section mb-5" v-if="listPosts.length > 0">
+                    <section class="list-section mb-5 px-2" v-if="listPosts.length > 0">
                         <h2 class="section-title mb-4">
                             <font-awesome-icon :icon="['fas', 'list']" class="me-2" />
                             전체 목록
@@ -421,7 +421,7 @@ onMounted(async () => {
                     </section>
 
                     <!-- 글이 없는 경우 -->
-                    <div v-if="filteredAndSortedPosts.length === 0" class="no-results">
+                    <div v-if="filteredAndSortedPosts.length === 0" class="no-results px-3">
                         <font-awesome-icon :icon="['fas', 'search']" class="no-results-icon" />
                         <h4>검색 결과가 없습니다</h4>
                         <p>다른 카테고리를 선택해보세요.</p>

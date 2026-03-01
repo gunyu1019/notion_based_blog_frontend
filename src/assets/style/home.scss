@@ -35,10 +35,13 @@
                     transition: all 0.2s ease;
                     cursor: pointer;
 
-                    &:hover {
-                        background: #f8f9fa;
-                        border-color: #495057;
-                        transform: translateY(-1px);
+                    // 마우스 환경에서만 호버 애니메이션 적용
+                    @media (hover: hover) and (pointer: fine) {
+                        &:hover {
+                            background: #f8f9fa;
+                            border-color: #495057;
+                            transform: translateY(-1px);
+                        }
                     }
 
                     &.active {
@@ -74,9 +77,12 @@
                 flex-shrink: 0;
             }
 
-            &:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            // 마우스 환경에서만 호버 애니메이션 적용
+            @media (hover: hover) and (pointer: fine) {
+                &:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
             }
 
             &:focus {
@@ -95,9 +101,12 @@
                 padding: 10px 16px;
                 transition: all 0.2s ease;
 
-                &:hover {
-                    background-color: #f8f9fa;
-                    transform: translateX(4px);
+                // 마우스 환경에서만 호버 애니메이션 적용
+                @media (hover: hover) and (pointer: fine) {
+                    &:hover {
+                        background-color: #f8f9fa;
+                        transform: translateX(4px);
+                    }
                 }
 
                 &.active {
@@ -125,9 +134,12 @@
                 transition: all 0.15s ease;
                 cursor: pointer;
 
-                &:hover {
-                    background-color: #f8f9fa;
-                    transform: translateX(4px);
+                // 마우스 환경에서만 호버 애니메이션 적용
+                @media (hover: hover) and (pointer: fine) {
+                    &:hover {
+                        background-color: #f8f9fa;
+                        transform: translateX(4px);
+                    }
                 }
 
                 &.active {
@@ -146,15 +158,93 @@
 
 // 2. 중앙 Top 3 하이라이트 카드 스타일
 .highlight-section {
+    // 호버 애니메이션 안전 영역 확보
+    padding: 1rem;
+    margin: -1rem; // 패딩으로 인한 시각적 정렬 보정
+
     .section-title {
         font-size: 1.75rem;
         font-weight: 600;
         color: #212529;
         display: flex;
         align-items: center;
+        margin-left: 1rem; // 안전 영역 보정으로 인한 제목 정렬
+        margin-bottom: 1.5rem;
+
+        @media (max-width: 767px) {
+            margin-left: 2rem; // 모바일에서 추가 보정
+        }
 
         i {
             color: #ffc107;
+        }
+    }
+
+    // 반응형 슬라이더 래퍼
+    .top-posts-slider {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        padding-block: 1.5rem; // 상하 안전 영역 확보
+
+        // 태블릿 환경 (768px ~ 991px)
+        @media (max-width: 991px) and (min-width: 768px) {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 11 */
+            padding-block: 2rem; // 모바일/태블릿에서 더 넉넉한 상하 패딩
+
+            // 스크롤 성능 최적화
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+
+            &::-webkit-scrollbar {
+                display: none; /* Safari and Chrome */
+            }
+
+            .card-wrapper {
+                flex: 0 0 48%;
+                scroll-snap-align: center;
+                scroll-snap-stop: always;
+            }
+        }
+
+        // 모바일 환경 (767px 이하)
+        @media (max-width: 767px) {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 0.75rem;
+            padding: 2rem 1rem; // 모바일에서 상하좌우 모두 넉넉한 패딩
+            margin: 0 -1rem;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 11 */
+
+            // 스크롤 성능 최적화
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+
+            &::-webkit-scrollbar {
+                display: none; /* Safari and Chrome */
+            }
+
+            .card-wrapper {
+                flex: 0 0 85%;
+                scroll-snap-align: center;
+                scroll-snap-stop: always;
+            }
+        }
+
+        // PC 환경에서는 기본 그리드 유지
+        @media (min-width: 992px) {
+            .card-wrapper {
+                scroll-snap-align: none;
+            }
         }
     }
 
@@ -167,16 +257,30 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         cursor: pointer;
 
-        &:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
-            border-color: #007bff;
+        // 터치 기기를 위한 활성 상태 스타일
+        &:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        // 마우스 환경에서만 호버 애니메이션 적용
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+                border-color: #007bff;
+            }
         }
 
         .card-img-top-wrapper {
             position: relative;
             height: 200px;
             overflow: hidden;
+
+            // 모바일에서 이미지 높이 조정
+            @media (max-width: 767px) {
+                height: 180px;
+            }
 
             .card-img-top {
                 width: 100%;
@@ -185,13 +289,21 @@
                 transition: transform 0.3s ease;
             }
 
-            &:hover .card-img-top {
-                transform: scale(1.05);
+            // 마우스 환경에서만 이미지 확대 애니메이션 적용
+            @media (hover: hover) and (pointer: fine) {
+                &:hover .card-img-top {
+                    transform: scale(1.05);
+                }
             }
         }
 
         .card-body {
             padding: 20px;
+
+            // 모바일에서 패딩 조정
+            @media (max-width: 767px) {
+                padding: 15px;
+            }
 
             .card-title {
                 font-size: 1.2rem;
@@ -203,6 +315,12 @@
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
+
+                // 모바일에서 폰트 크기 조정
+                @media (max-width: 767px) {
+                    font-size: 1.1rem;
+                    margin-bottom: 12px;
+                }
             }
 
             .card-meta {
@@ -211,10 +329,22 @@
                 justify-content: space-between;
                 align-items: center;
 
+                // 모바일에서 세로 정렬
+                @media (max-width: 767px) {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 5px;
+                    margin-bottom: 12px;
+                }
+
                 small {
                     font-size: 13px;
                     display: flex;
                     align-items: center;
+
+                    @media (max-width: 767px) {
+                        font-size: 12px;
+                    }
 
                     i {
                         margin-right: 5px;
@@ -229,6 +359,12 @@
                     padding: 4px 8px;
                     border-radius: 8px;
                     margin-right: 6px;
+
+                    @media (max-width: 767px) {
+                        font-size: 10px;
+                        padding: 3px 6px;
+                        margin-right: 4px;
+                    }
                 }
             }
         }
@@ -245,11 +381,25 @@
         padding: 25px;
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 
-        &:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
-            border-color: #007bff;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        // 모바일에서 패딩 조정
+        @media (max-width: 767px) {
+            padding: 20px;
+        }
+
+        // 터치 기기를 위한 활성 상태 스타일
+        &:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        // 마우스 환경에서만 호버 애니메이션 적용
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+                border-color: #007bff;
+                background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            }
         }
 
         .card-title {
@@ -258,6 +408,12 @@
             color: #212529;
             margin-bottom: 15px;
             line-height: 1.4;
+
+            // 모바일에서 폰트 크기 조정
+            @media (max-width: 767px) {
+                font-size: 1.15rem;
+                margin-bottom: 12px;
+            }
         }
 
         .card-description {
@@ -265,6 +421,16 @@
             font-size: 15px;
             line-height: 1.6;
             margin-bottom: 20px;
+
+            // 모바일에서 폰트 크기와 여백 조정
+            @media (max-width: 767px) {
+                font-size: 14px;
+                margin-bottom: 15px;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
         }
 
         .card-meta {
@@ -273,10 +439,22 @@
             justify-content: space-between;
             align-items: center;
 
+            // 모바일에서 세로 정렬
+            @media (max-width: 767px) {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+                margin-bottom: 12px;
+            }
+
             small {
                 font-size: 13px;
                 display: flex;
                 align-items: center;
+
+                @media (max-width: 767px) {
+                    font-size: 12px;
+                }
 
                 i {
                     margin-right: 5px;
@@ -291,6 +469,12 @@
                 padding: 4px 8px;
                 border-radius: 8px;
                 margin-right: 6px;
+
+                @media (max-width: 767px) {
+                    font-size: 10px;
+                    padding: 3px 6px;
+                    margin-right: 4px;
+                }
             }
         }
     }
@@ -298,15 +482,35 @@
 
 // 3. 하단 리스트 뷰 스타일
 .list-section {
+    // 호버 애니메이션 안전 영역 확보
+    padding: 1.5rem 0.5rem; // 상하 안전 영역 증가
+    margin: -1.5rem -0.5rem; // 패딩으로 인한 시각적 정렬 보정
+
     .section-title {
         font-size: 1.5rem;
         font-weight: 600;
         color: #212529;
         display: flex;
         align-items: center;
+        margin-left: 0.5rem; // 안전 영역 보정으로 인한 제목 정렬
+        margin-bottom: 1.5rem;
 
         i {
-            color: #6c757d;
+            color: #28a745;
+        }
+    }
+
+    // 리스트 그룹에 아이템 간격 확보
+    .list-group {
+        .list-group-item {
+            margin-bottom: 1.5rem; // 아이템 간 충분한 여백 확보
+            padding: 0; // Bootstrap 기본 패딩 제거
+            background: transparent;
+            border: none;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
         }
     }
 
@@ -319,10 +523,13 @@
         cursor: pointer;
         overflow: hidden;
 
-        &:hover {
-            transform: translateX(8px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-            border-color: #007bff;
+        // 마우스 환경에서만 호버 애니메이션 적용
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                transform: translateY(-4px) scale(1.02);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                border-color: #007bff;
+            }
         }
 
         .list-thumbnail {
@@ -332,8 +539,11 @@
             transition: transform 0.3s ease;
         }
 
-        &:hover .list-thumbnail {
-            transform: scale(1.05);
+        // 마우스 환경에서만 썸네일 확대 애니메이션 적용
+        @media (hover: hover) and (pointer: fine) {
+            &:hover .list-thumbnail {
+                transform: scale(1.05);
+            }
         }
 
         .card-body {
@@ -386,11 +596,14 @@
         padding: 25px;
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 
-        &:hover {
-            transform: translateX(8px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-            border-color: #007bff;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        // 마우스 환경에서만 호버 애니메이션 적용
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                transform: translateY(-4px) scale(1.02);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                border-color: #007bff;
+                background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            }
         }
 
         .card-title {
@@ -433,6 +646,12 @@
             }
         }
     }
+
+    // 더보기 버튼 영역에 안전 여백 확보
+    .text-center {
+        padding: 1rem 0.5rem;
+        margin-top: 1rem;
+    }
 }
 
 // 더보기 버튼 스타일
@@ -443,9 +662,12 @@
     transition: all 0.2s ease;
     cursor: pointer;
 
-    &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    // 마우스 환경에서만 호버 애니메이션 적용
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
     }
 
     i {
@@ -455,8 +677,9 @@
 
 // 검색 결과 없음 스타일
 .no-results {
-    padding: 60px 0;
+    padding: 60px 1rem; // 좌우 안전 여백 추가
     text-align: center;
+    margin: 0 -1rem; // 시각적 정렬 보정
 
     .no-results-icon {
         font-size: 3rem;
