@@ -1,10 +1,41 @@
 // PostDetailView 컴포넌트 전용 스타일
 .post-detail-view {
     min-height: 100vh;
+    background: #ffffff;
+}
+
+// 미니멀 네비게이션 바
+.post-navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1030;
+
+    .navbar-brand {
+        font-size: 1.1rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+            color: #0d6efd !important;
+            transform: translateX(-2px);
+        }
+
+        i {
+            transition: transform 0.2s ease;
+        }
+
+        &:hover i {
+            transform: translateX(-2px);
+        }
+    }
+
+    .border-bottom {
+        border-color: rgba(0, 0, 0, 0.08) !important;
+    }
 }
 
 .content-wrapper {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #ffffff;
     min-height: 80vh;
 }
 
@@ -19,19 +50,20 @@
     padding: 3rem 1rem;
 }
 
-// 게시글 아티클
+// 게시글 아티클 (미니멀 플랫 디자인)
 .post-article {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 3rem;
+    background: transparent;
+    padding: 2rem 0;
     margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .post-header {
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     padding-bottom: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 
     // 카테고리 배지 스타일 개선
     .badge {
@@ -144,9 +176,8 @@
 // 반응형 디자인
 @media (max-width: 768px) {
     .post-article {
-        padding: 1.5rem;
-        margin: 0 1rem 2rem;
-        border-radius: 8px;
+        padding: 1.5rem 1rem;
+        margin-bottom: 2rem;
     }
 
     .post-content {
@@ -163,15 +194,32 @@
         min-height: 50vh;
         padding: 2rem 1rem;
     }
+
+    .post-navbar {
+        .navbar-brand {
+            font-size: 1rem;
+        }
+    }
 }
 
 @media (max-width: 480px) {
     .post-article {
-        padding: 1rem;
-        margin: 0 0.5rem 2rem;
+        padding: 1rem 0.5rem;
+        margin-bottom: 2rem;
     }
 
     .post-header {
         padding-bottom: 1.5rem;
+    }
+
+    .post-navbar {
+        .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .navbar-brand {
+            font-size: 0.95rem;
+        }
     }
 }

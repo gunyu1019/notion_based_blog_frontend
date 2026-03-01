@@ -1,9 +1,24 @@
 <template>
     <div class="post-detail-view">
+        <!-- 게시글 전용 미니멀 네비게이션 바 -->
+        <nav class="post-navbar sticky-top">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <!-- 좌측: 홈 링크 -->
+                    <RouterLink to="/" class="navbar-brand text-dark text-decoration-none fw-bold">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        이용현의 블로그
+                    </RouterLink>
 
-        <!-- 웨이브 배경 -->
-        <Wave type="1" />
+                    <!-- 우측: 공유 버튼 (선택사항, 현재는 비워둠) -->
+                    <div class="navbar-actions">
+                        <!-- 향후 공유 버튼 등 추가 가능 -->
+                    </div>
+                </div>
+            </div>
+        </nav>
 
+        <!-- 메인 콘텐츠 -->
         <div class="content-wrapper">
             <div class="container py-5">
                 <!-- 로딩 상태 -->
@@ -111,9 +126,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 하단 웨이브 -->
-        <div class="wrapper" style="background: #373b3e; padding: 100px 0"></div>
     </div>
 </template>
 
@@ -123,9 +135,6 @@ import { useRoute } from 'vue-router'
 import NotionBlock from '@/components/block/NotionBlock.vue'
 import { extendedApi, type PostItemDetail } from '@/api'
 import '@/assets/style/post.scss'
-
-// 컴포넌트 별칭
-const Wave = WaveItem
 
 const route = useRoute()
 

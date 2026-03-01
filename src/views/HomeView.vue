@@ -18,6 +18,9 @@ const selectedCategory = ref<string | null>(null)
 const sortOption = ref<'latest' | 'popular'>('latest')
 const displayLimit = ref<number>(5)
 
+// API 로딩 상태
+const isLoading = ref<boolean>(true)
+
 // 방문자 수 임시 데이터
 const todayHits = ref<number>(128)
 const monthHits = ref<number>(3256)
@@ -158,11 +161,14 @@ function navigateToPost(postId: string) {
 // 컴포넌트 마운트 시 데이터 로드
 onMounted(async () => {
     try {
+        isLoading.value = true
         await postItemStore.fetchContent()
         // 게시글에서 카테고리 추출
         categoryStore.extractCategoriesFromPosts(content.value)
     } catch (error) {
         console.error('Failed to load data:', error)
+    } finally {
+        isLoading.value = false
     }
 })
 </script>
@@ -298,8 +304,27 @@ onMounted(async () => {
                         </div>
                     </div>
 
-                    <!-- 2. 중앙: Top 3 하이라이트 카드 (Middle Section) -->
-                    <section class="highlight-section mb-5 px-2" v-if="topPosts.length > 0">
+                    <!-- 로딩 상태 (상태 A) -->
+                    <div v-if="isLoading" class="loading-section d-flex justify-content-center align-items-center py-5">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="text-muted">게시글을 불러오는 중입니다...</p>
+                        </div>
+                    </div>
+
+                    <!-- 데이터 없음 상태 (상태 B) -->
+                    <div v-else-if="!isLoading && filteredAndSortedPosts.length === 0" class="no-results px-3">
+                        <font-awesome-icon :icon="['fas', 'search']" class="no-results-icon" />
+                        <h4>검색 결과가 없습니다</h4>
+                        <p>다른 카테고리를 선택해보세요.</p>
+                    </div>
+
+                    <!-- 데이터 렌더링 상태 (상태 C) -->
+                    <div v-else>
+                        <!-- 2. 중앙: Top 3 하이라이트 카드 (Middle Section) -->
+                        <section class="highlight-section mb-5 px-2" v-if="topPosts.length > 0">
                         <h2 class="section-title mb-4">
                             <font-awesome-icon :icon="['fas', 'star']" class="me-2" />
                             {{ sortOption === 'latest' ? '최신 글' : '인기 글' }}
@@ -410,8 +435,8 @@ onMounted(async () => {
                         </div>
                     </section>
 
-                    <!-- 3. 하단: 리스트 뷰 및 Mock 페이지네이션 (Bottom Section) -->
-                    <section class="list-section mb-5 px-2" v-if="listPosts.length > 0">
+                        <!-- 3. 하단: 리스트 뷰 및 Mock 페이지네이션 (Bottom Section) -->
+                        <section class="list-section mb-5 px-2" v-if="listPosts.length > 0">
                         <h2 class="section-title mb-4">
                             <font-awesome-icon :icon="['fas', 'list']" class="me-2" />
                             전체 목록
@@ -537,14 +562,8 @@ onMounted(async () => {
                                 더보기 ({{ filteredAndSortedPosts.length - 3 - displayLimit }}개 더)
                             </button>
                         </div>
-                    </section>
-
-                    <!-- 글이 없는 경우 -->
-                    <div v-if="filteredAndSortedPosts.length === 0" class="no-results px-3">
-                        <font-awesome-icon :icon="['fas', 'search']" class="no-results-icon" />
-                        <h4>검색 결과가 없습니다</h4>
-                        <p>다른 카테고리를 선택해보세요.</p>
-                    </div>
+                        </section>
+                    </div> <!-- 데이터 렌더링 상태 div 종료 -->
                 </div>
             </div>
         </div>
