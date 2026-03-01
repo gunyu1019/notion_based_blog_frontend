@@ -57,14 +57,14 @@
                             <span
                                 v-for="category in postDetail.category"
                                 :key="category.id"
-                                class="badge bg-primary me-2"
+                                class="badge bg-primary me-2 fs-6 px-3 py-2"
                             >
                                 {{ category.name }}
                             </span>
                         </div>
 
                         <!-- 제목 -->
-                        <h1 class="display-4 fw-bold mb-4">{{ postDetail.title }}</h1>
+                        <h1 class="h3 fw-bold mb-4">{{ postDetail.title }}</h1>
 
                         <!-- 메타 정보 (조회수만) -->
                         <div class="post-meta">
