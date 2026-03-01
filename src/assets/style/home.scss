@@ -2,14 +2,129 @@
 .home-container {
     background: #ffffff;
     min-height: 100vh;
-    padding-top: 80px; // Header 높이만큼 여백
 }
 
-.top-spacing {
-    height: 150px;
-    display: flex;
-    align-items: flex-end;
-    margin-bottom: 40px;
+// Hero Section 스타일
+.hero-section {
+    margin-top: 100px;
+    margin-bottom: 100px;
+    padding: 0 20px;
+
+    .hero-intro {
+        .hero-subtitle {
+            color: #6c757d !important;
+            font-weight: 300 !important;
+            line-height: 1.6;
+            margin-bottom: 1rem !important;
+        }
+
+        .hero-title {
+            color: #212529 !important;
+            font-weight: 700 !important;
+            line-height: 1.4;
+            margin-bottom: 2rem !important;
+        }
+    }
+
+    .hero-sns {
+        margin-bottom: 3rem !important;
+
+        .sns-button {
+            width: 48px;
+            height: 48px;
+            border-color: #6c757d !important;
+            color: #6c757d !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border-width: 1.5px !important;
+
+            &:hover {
+                background-color: #6c757d;
+                color: #ffffff !important;
+                border-color: #6c757d !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(108, 117, 125, 0.2);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+
+            i {
+                font-size: 18px;
+            }
+        }
+    }
+
+    .hero-visitor-counter {
+        margin-bottom: 3rem;
+
+        .visitor-badge {
+            .badge {
+                background-color: #f8f9fa !important;
+                border: 1px solid #e9ecef;
+                color: #495057 !important;
+                font-weight: 500;
+                font-size: 0.9rem;
+                border-radius: 20px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+                i {
+                    color: #6c757d;
+                }
+
+                strong {
+                    color: #212529;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}
+
+// 반응형 디자인
+@media (max-width: 768px) {
+    .hero-section {
+        margin-top: 60px;
+        margin-bottom: 60px;
+        padding: 0 15px;
+
+        .hero-intro {
+            .hero-subtitle {
+                font-size: 1rem !important;
+            }
+
+            .hero-title {
+                font-size: 1.75rem !important;
+            }
+        }
+
+        .hero-sns {
+            .sns-button {
+                width: 42px;
+                height: 42px;
+                margin: 0 0.75rem !important;
+
+                i {
+                    font-size: 16px;
+                }
+            }
+        }
+
+        .hero-visitor-counter {
+            .d-flex {
+                flex-direction: column;
+                gap: 0.75rem !important;
+            }
+
+            .visitor-badge .badge {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem !important;
+            }
+        }
+    }
 }
 
 // 1. 상단 필터 및 정렬 바 스타일

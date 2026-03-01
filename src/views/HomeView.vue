@@ -4,8 +4,6 @@ import { useCategoryStore } from '@/stores/category'
 import { onMounted, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import Wave from '@/components/WaveItem.vue'
-import HeaderNavbar from '@/components/HeaderNavbar.vue'
 
 // 라우터 초기화
 const router = useRouter()
@@ -19,6 +17,10 @@ const { content } = storeToRefs(postItemStore)
 const selectedCategory = ref<string | null>(null)
 const sortOption = ref<'latest' | 'popular'>('latest')
 const displayLimit = ref<number>(5)
+
+// 방문자 수 임시 데이터
+const todayHits = ref<number>(128)
+const monthHits = ref<number>(3256)
 
 // 카테고리 추출 (Computed)
 const uniqueCategories = computed(() => {
@@ -148,15 +150,48 @@ onMounted(async () => {
 </script>
 
 <template>
-    <!-- Header -->
-    <HeaderNavbar />
-
     <!-- Main Content -->
     <div class="home-container">
-        <!-- Top Spacing with Wave -->
-        <div class="top-spacing">
-            <Wave type="1" />
-        </div>
+        <!-- Hero Section -->
+        <section class="hero-section d-flex flex-column align-items-center justify-content-center text-center">
+            <!-- 소개글 -->
+            <div class="hero-intro">
+                <p class="hero-subtitle fs-5 text-muted fw-light mb-3">
+                    세상에 도움이 되는 프로그램을 만들기 위한 여정을 담은
+                </p>
+                <h1 class="hero-title display-6 fw-bold text-dark mb-4">
+                    소프트웨어 개발자 이용현의 블로그입니다.
+                </h1>
+            </div>
+
+            <!-- SNS 링크 버튼 -->
+            <div class="hero-sns mb-5">
+                <a href="https://github.com" target="_blank" class="btn btn-outline-secondary rounded-circle sns-button me-3">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="mailto:contact@example.com" class="btn btn-outline-secondary rounded-circle sns-button">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+
+            <!-- 방문자 수 카운터 -->
+            <div class="hero-visitor-counter">
+                <div class="d-flex gap-3 justify-content-center">
+                    <div class="visitor-badge">
+                        <span class="badge bg-light text-dark px-3 py-2">
+                            <i class="fas fa-calendar-day me-2"></i>
+                            금일 방문자: <strong>{{ todayHits.toLocaleString() }}</strong>
+                        </span>
+                    </div>
+                    <div class="visitor-badge">
+                        <span class="badge bg-light text-dark px-3 py-2">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            당월 방문자: <strong>{{ monthHits.toLocaleString() }}</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <div class="container-fluid">
             <div class="row justify-content-center">

@@ -18,7 +18,6 @@ declare module 'vue' {
     ColumnBlockItem: typeof import('./src/components/block/ColumnBlockItem.vue')['default']
     ColumnListBlockItem: typeof import('./src/components/block/ColumnListBlockItem.vue')['default']
     FileBlockItem: typeof import('./src/components/block/FileBlockItem.vue')['default']
-    HeaderNavbar: typeof import('./src/components/HeaderNavbar.vue')['default']
     NotionBlock: typeof import('./src/components/block/NotionBlock.vue')['default']
     PostList: typeof import('./src/components/PostList.vue')['default']
     QuoteBlockItem: typeof import('./src/components/block/QuoteBlockItem.vue')['default']

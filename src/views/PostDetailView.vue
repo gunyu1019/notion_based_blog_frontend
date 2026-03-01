@@ -1,7 +1,5 @@
 <template>
     <div class="post-detail-view">
-        <!-- 헤더 네비게이션 -->
-        <HeaderNavbar />
 
         <!-- 웨이브 배경 -->
         <Wave type="1" />
@@ -122,8 +120,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import HeaderNavbar from '@/components/HeaderNavbar.vue'
-import WaveItem from '@/components/WaveItem.vue'
 import NotionBlock from '@/components/block/NotionBlock.vue'
 import { extendedApi, type PostItemDetail } from '@/api'
 import '@/assets/style/post.scss'
